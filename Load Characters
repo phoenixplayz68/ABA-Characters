@@ -26,7 +26,10 @@ repeat task.wait() until _G.ABACons~=nil
 
 --Characters
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Yoriichi'))()
+wait(.5)
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Muzan'))()
+wait(.5)
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Gold%20Roger'))()
+wait(.5)
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Akaza'))()
 ----
