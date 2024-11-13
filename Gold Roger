@@ -134,7 +134,6 @@ if _G.AFK==nil then
 	end)
 end
 
-loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/phoenixplayz68/refs/heads/master/Base%20Character'))()
 repeat task.wait() until _G.UPDFuncs~=nil
 local char = plr.Character
 local humr = char.HumanoidRootPart
