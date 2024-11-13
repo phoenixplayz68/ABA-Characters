@@ -410,7 +410,7 @@ local function createAvatar()
 		task.spawn(function()
 			local acc = createHat(v.mesh,v.texture,not v.cf2 and v.attach or nil,v.color,v.material,v.rf)
 			if not v.cf2 then
-				acc.Weld.C1 = v.cf
+				acc.Weld.C1 = v.cf or CFrame.new(0,0,0)
 			else
 				acc.CFrame = char[v.attach].CFrame*v.cf2
 				weld(char[v.attach],acc)
