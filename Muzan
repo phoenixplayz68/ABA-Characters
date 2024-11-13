@@ -45,9 +45,9 @@ end
 local icon = "rbxassetid://14305029094" -- The character icon
 
 local character = "Choso" --The name of the roster character - Example: Zoro [Timeskip]
-local newName = "Muzan" --Name of the new character - Example: JellyBean Man
+local newName = "Muzan" --Name of the new character
 local legalName = newName:gsub("[^%w%s_]+", ""):gsub(" ","")
-local info = "Demon King" --Info of the new character - Example: The Strongest Jelly Bean
+local info = "Demon King" --Info of the new character
 
 if not isfile(legalName..".txt") then
 	writefile(legalName..".txt",game:GetService("HttpService"):JSONEncode({favorite=1}))
