@@ -1,0 +1,1347 @@
+local plr = game.Players.LocalPlayer
+local char = plr.Character
+
+local rosters = {
+	[1]="Dbz", 
+	[2]="Bleach", 
+	[3]="JJK", 
+	[4]="FairyTail", 
+	[5]="Fate", 
+	[6]="HXH", 
+	[7]="JJBA", 
+	[8]="DS", 
+	[9]="MISC", 
+	[10]="NarutoChars", 
+	[11]="OnePiece", 
+	[12]="Prestige", 
+	[13]="SAO"
+}
+
+local customRoster = false
+local rosterImage = "rbxassetid://"
+local rosterName = ""
+local rosterClone = 2
+local roster = 8 -- The roster for the character button - Example: 8 would put the button in the Demon Slayer roster
+
+local order = 10
+
+local rosterFrame = nil
+
+local function createRoster()
+	if customRoster then
+		rosterFrame = plr.PlayerGui:WaitForChild("HUD").CharacterSelect.Characters[rosters[rosterClone]]:Clone()
+		rosterFrame.Visible=false
+		rosterFrame.Icon.Image = rosterImage
+		rosterFrame.Name = rosterName
+		rosterFrame.Parent = plr.PlayerGui.HUD.CharacterSelect.Characters
+		rosters[#rosters+1] = rosterName
+		roster=#rosters
+		for i,v in pairs(rosterFrame.Slots:GetChildren()) do
+			if v:IsA("ImageButton") then v:Destroy() end
+		end
+	end
+end
+
+local icon = "rbxassetid://14305029094" -- The character icon
+
+local character = "Choso" --The name of the roster character - Example: Zoro [Timeskip]
+local newName = "Muzan" --Name of the new character - Example: JellyBean Man
+local legalName = newName:gsub("[^%w%s_]+", ""):gsub(" ","")
+local info = "Demon King" --Info of the new character - Example: The Strongest Jelly Bean
+
+if not isfile(legalName..".txt") then
+	writefile(legalName..".txt",game:GetService("HttpService"):JSONEncode({favorite=1}))
+end
+
+local data = game:GetService("HttpService"):JSONDecode(readfile(legalName..".txt"))
+
+local moves = {
+	base = {
+		"",
+		"",
+		"",
+		""
+	},
+	mode = {
+		"",
+		"",
+		"",
+		""
+	}
+}
+local changeMoves = false --If true then it changes the move names
+
+local anims = {modeAnim="105134606411645"}
+
+local skins = {
+	[1] = {
+		shirt = "rbxassetid://4851131108",
+		pants = "rbxassetid://6709793843",
+		skinColor = Color3.fromRGB(203, 161, 125),	
+		accessories = {
+			face = {mesh="rbxassetid://18496671350",texture="rbxassetid://18496671419",attach="Head"},
+			hair = {mesh="rbxassetid://18459676694",texture="rbxassetid://18459687835",attach="Head",
+				cf=CFrame.new(0,-0.3,0), scale=Vector3.new(1, 1, 1)},
+		},
+		modeFit={
+			shirt = "rbxassetid://4851131108",
+			pants = "rbxassetid://6709793843",
+			skinColor = Color3.fromRGB(203, 161, 125),	
+			accessories = {
+				face = {mesh="rbxassetid://18794797990",texture="rbxassetid://18794800962",attach="Head",scale=Vector3.new(1.05,1.05,1.05)},
+				hair = {mesh="rbxassetid://18459676694",texture="rbxassetid://18459687835",attach="Head",
+					cf=CFrame.new(0,-0.3,0), scale=Vector3.new(1, 1, 1)},
+			},
+		}
+	},
+	[2] = {
+		shirt = "rbxassetid://18201720002",
+		pants = "rbxassetid://18201728260",
+		skinColor = Color3.fromRGB(203, 161, 125),	
+		accessories = {
+			face = {mesh="rbxassetid://18496671350",texture="rbxassetid://18496671419",attach="Head"},
+			hair = {mesh="rbxassetid://18459676694",texture="rbxassetid://18459687835",attach="Head",
+				cf=CFrame.new(0,-0.3,0), scale=Vector3.new(1, 1, 1)},
+		},
+		modeFit={
+			shirt = "rbxassetid://18201720002",
+			pants = "rbxassetid://18201728260",
+			skinColor = Color3.fromRGB(203, 161, 125),	
+			accessories = {
+				face = {mesh="rbxassetid://18794797990",texture="rbxassetid://18794800962",attach="Head",scale=Vector3.new(1.05,1.05,1.05)},
+				hair = {mesh="rbxassetid://18459676694",texture="rbxassetid://18459687835",attach="Head",
+					cf=CFrame.new(0,-0.3,0), scale=Vector3.new(1, 1, 1)},
+			},
+		}
+	},
+	[3] = {
+		shirt = "rbxassetid://13110539658",
+		pants = "rbxassetid://13110540942",
+		skinColor = Color3.fromRGB(203, 161, 125),
+		accessories = {
+			hat = {mesh="rbxassetid://110361404355808",texture="rbxassetid://76245670024831",attach="Head",
+				cf=CFrame.new(0,-.15,-.05)},
+		},
+		modeFit={
+			shirt = "rbxassetid://13110539658",
+			pants = "rbxassetid://13110540942",
+			skinColor = Color3.fromRGB(203, 161, 125),
+			accessories = {
+				hat = {mesh="rbxassetid://110361404355808",texture="rbxassetid://76245670024831",attach="Head",
+					cf=CFrame.new(0,-.15,-.05)},
+				face = {mesh="rbxassetid://18794797990",texture="rbxassetid://18794800962",attach="Head",scale=Vector3.new(1,1,1),cf=CFrame.new(0,-.03,.02)},
+			},
+		}
+	},
+	[4] = {
+		shirt = "rbxassetid://13605442615",
+		pants = "rbxassetid://13605445032",
+		skinColor = Color3.fromRGB(203, 161, 125),
+		accessories = {
+			face = {mesh="rbxassetid://18426076043",texture="rbxassetid://18426250030",attach="Head"},
+			hair = {mesh="rbxassetid://18187793712",texture="rbxassetid://18187793779",attach="Head",
+				cf=CFrame.new(0.002, -0.181, -0.039), scale=Vector3.new(1.139, 1.033, 0.985)},
+			hair2 = {mesh="rbxassetid://15031245897",texture="rbxassetid://15031245768",attach="Head",
+				cf=CFrame.new(0, 0.235, -0.33), scale=Vector3.new(0.777, 0.678, 0.508)},
+		},
+	},
+	[5] = {
+		shirt = "rbxassetid://8315289103",
+		pants = "rbxassetid://8315310385",
+		skinColor = Color3.fromRGB(255, 200, 160),
+		accessories = {
+			face = {mesh="rbxassetid://18477706940",texture="rbxassetid://18477709289",attach="Head"},
+			hair = {mesh="rbxassetid://13908644765",texture="rbxassetid://13908645093",attach="Head",
+				cf=CFrame.new(-0.015, 0.05, -0.231)},
+		},
+		modeFit={
+			shirt = "rbxassetid://8315289103",
+			pants = "rbxassetid://8315310385",
+			skinColor = Color3.fromRGB(255, 200, 160),
+			accessories = {
+				face = {mesh="rbxassetid://18477769857",texture="rbxassetid://18477709289",attach="Head"},
+				hair = {mesh="rbxassetid://13908644765",texture="rbxassetid://13908645093",attach="Head",
+					cf=CFrame.new(-0.015, 0.05, -0.231)},
+			},
+		}
+	},
+	[6] = {
+		shirt = "rbxassetid://9878416041",
+		pants = "rbxassetid://9878419676",
+		skinColor = Color3.fromRGB(255, 197, 149),
+		accessories = {
+			face = {mesh="rbxassetid://18973356954",texture="rbxassetid://18973357551",attach="Head"},
+			hair = {mesh="rbxassetid://5871224535",texture="rbxassetid://4723909871",attach="Head",
+				cf=CFrame.new(0.008, -0.171, 0.205),scale=Vector3.new(0.788, 1.04, 0.683)},
+			hair2 = {mesh="rbxassetid://5871224535",texture="rbxassetid://4723909871",attach="Head",
+				cf=CFrame.new(0, -0.197, -0.01),scale=Vector3.new(1, 1.081, 1)},
+			hair3 = {mesh="rbxassetid://5415561240",texture="rbxassetid://4723909871",attach="Head",
+				cf=CFrame.new(-0.015, -0.199, -0.049),scale=Vector3.new(0.954, 1.028, 0.874)},
+		},
+		modeFit={
+			shirt = "rbxassetid://4851131108",
+			pants = "rbxassetid://6709793843",
+			skinColor = Color3.fromRGB(255, 197, 149),
+			accessories = {
+				face = {mesh="rbxassetid://17481315020",texture="rbxassetid://17481315263",attach="Head"},
+				hair = {mesh="rbxassetid://18187793712",texture="rbxassetid://18187793779",attach="Head",
+					cf=CFrame.new(0.002, -0.181, -0.039), scale=Vector3.new(1.139, 1.033, 0.985)},
+				hair2 = {mesh="rbxassetid://15031245897",texture="rbxassetid://15031245768",attach="Head",
+					cf=CFrame.new(0, 0.235, -0.33), scale=Vector3.new(0.777, 0.678, 0.508)},
+			},
+		}
+	},
+}
+skins[#skins+1]={
+	name = "Type Legendary1",
+	shirt = "rbxassetid://18314631252",
+	pants = "rbxassetid://12975782394",
+	skinColor = Color3.fromRGB(226, 178, 139),	
+	accessories = {
+		face = {mesh="rbxassetid://18364423709",texture="rbxassetid://18364400725",attach="Head",cf=CFrame.new(0,0,0)*CFrame.Angles(0,math.rad(-90),0)},
+		hair = {mesh="rbxassetid://18187793712",texture="rbxassetid://18187793779",attach="Head",
+			cf=CFrame.new(0.002, -0.181, -0.039), scale=Vector3.new(1.139, 1.033, 0.985)},
+		hair2 = {mesh="rbxassetid://15031245897",texture="rbxassetid://15031245768",attach="Head",
+			cf=CFrame.new(0, 0.235, -0.33), scale=Vector3.new(0.777, 0.678, 0.508)},
+		
+		gun = {mesh="rbxassetid://17780107058",texture="rbxassetid://17780117180",attach="Left Arm",
+			cf2=CFrame.new(-0.00900268555, -1.77400017, -0.307006836, -4.37113883e-08, 0, -1, 1, -4.37113883e-08, -4.37113883e-08, -4.37113883e-08, -1, 1.91068547e-15), scale=Vector3.new(1,1,1)},
+	},
+	modeFit={
+		shirt = "http://www.roblox.com/asset/?id=4757942516",
+		pants = "http://www.roblox.com/asset/?id=13224740348",
+		skinColor = Color3.fromRGB(226, 178, 139),	
+		accessories = {
+			face = {mesh="rbxassetid://13085545060",texture="rbxassetid://106191432171426",attach="Head",cf=CFrame.new(0.001, -0, 0)*CFrame.Angles(0,math.rad(180),0)},
+			hair = {mesh="rbxassetid://17689738681",texture="rbxassetid://17775166361",attach="Head",
+				cf=CFrame.new(0, 0.5, -0.3)*CFrame.Angles(0,math.rad(180),0)},
+			hair2 = {mesh="rbxassetid://17694520459",texture="rbxassetid://17775166361",attach="Head",
+				cf=CFrame.new(-0.01, 0.67, 0.7)*CFrame.Angles(0,math.rad(180),0),scale=Vector3.new(1, 0.9, 1)},
+			tentacles = {mesh="rbxassetid://131208248183061",texture="rbxassetid://119742361922273",attach="Torso",
+				cf=CFrame.new(0.022, -1.375, -1.262)},
+		},
+	}
+}
+skins[#skins+1]={
+	name = "Type Gold",
+	shirt = "rbxassetid://133933912118473",
+	pants = "rbxassetid://91243021400938",
+	skinColor = Color3.fromRGB(203, 161, 125),	
+	accessories = {
+		face = {mesh="rbxassetid://18496671350",texture="rbxassetid://105591356285059",attach="Head"},
+		hair = {mesh="rbxassetid://18459676694",texture="rbxassetid://128273438541625",attach="Head",
+			cf=CFrame.new(0,-0.3,0), scale=Vector3.new(1, 1, 1)},
+	},
+	modeFit={
+		shirt = "rbxassetid://133933912118473",
+		pants = "rbxassetid://91243021400938",
+		skinColor = Color3.fromRGB(203, 161, 125),
+		accessories = {
+			face = {mesh="rbxassetid://18794797990",texture="rbxassetid://90360362672837",attach="Head",scale=Vector3.new(1.05,1.05,1.05)},
+			hair = {mesh="rbxassetid://18459676694",texture="rbxassetid://128273438541625",attach="Head",
+				cf=CFrame.new(0,-0.3,0), scale=Vector3.new(1, 1, 1)},
+		},
+	}
+}
+
+if _G.AFK==nil then
+	_G.AFK=true
+	local vu = game:GetService("VirtualUser")
+	game:GetService("Players").LocalPlayer.Idled:connect(function()
+		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		wait(1)
+		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	end)
+end
+
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/phoenixplayz68/refs/heads/master/Base%20Character'))()
+repeat task.wait() until _G.UPDFuncs~=nil
+local humr = char.HumanoidRootPart
+
+local currentSkin = data.favorite
+
+local totalSkins = 0
+for i,v in pairs(skins) do
+	totalSkins+=1
+end
+
+local bodyParts = {"Left Arm","Right Arm","Left Leg","Right Leg","Torso"}
+
+local isBase = true
+local selected = false
+
+_G[newName] = Random.new():NextNumber(1,199591295245)
+local currentScript = _G[newName]
+
+local access = {}
+
+function weld(x, y)
+	if x == y then return end
+	local CJ = CFrame.new(x.Position)
+	local w = Instance.new("ManualWeld")
+	w.Part0 = x
+	w.Part1 = y
+	w.C0 = x.CFrame:inverse() * CJ
+	w.C1 = y.CFrame:inverse() * CJ
+	w.Parent = x
+	return w
+end
+
+local function createHat(meshid,textid,attach,color,material,rf)
+	local model = Instance.new("Model")
+	model.Name = "Morph"
+	model:SetAttribute("Custom",newName)
+	model.Parent = plr.Character
+	local part = Instance.new("Part",model)
+	part.Color=color or Color3.fromRGB(255,255,255)
+	part.CanCollide=false
+	part.Size = Vector3.new(1,1,1)
+	part.Material = Enum.Material[material or "Plastic"]
+	part.Reflectance = rf or 0
+	local mesh = Instance.new("SpecialMesh",part)
+	mesh.MeshId = meshid
+	mesh.TextureId = textid or ""
+
+	if attach~=nil then
+		local weld = Instance.new("Weld",part)
+		weld.Part0 = plr.Character:WaitForChild(attach)
+		weld.Part1 = part
+	end
+
+	table.insert(access,model)
+	return part
+end
+
+local function sound(id,vol,par,tim)
+	local sound = Instance.new("Sound",par)
+	sound.SoundId = id
+	sound.Volume = vol or 1
+	sound:Play()
+	game:GetService("Debris"):AddItem(sound,tim or 5)
+	return sound
+end
+
+local cons = {}
+local cons2 = {}
+
+local function roundDecimal(value)
+	value *= 100
+	value = math.floor(value)
+	value = value / 100
+	return value
+end
+
+local function resetBody()
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if table.find(bodyParts,v.Name) then
+			v.Transparency = 0
+			v.Color = Color3.fromRGB(234, 184, 146)
+		elseif v.Name=="FakeHead" then
+			v.Transparency = 0
+		end
+	end
+end
+
+local function goldPart()
+	local mod = Instance.new("Model")
+	mod.Name="Morph"
+	mod:SetAttribute("Custom",newName)
+	mod:SetAttribute("Gold",true)
+	mod.Parent=char
+	local part = Instance.new("Part",mod)
+	part.Size = Vector3.new(1.1999995708465576, 5.19999885559082, 3.9000003337860107)
+	part.Transparency=1
+	part.CanCollide=false
+	part.Massless=true
+	local weld = Instance.new("Weld",part)
+	weld.Part0 = char.Torso
+	weld.Part1 = part
+	weld.C1 = CFrame.new(0.0433807373046875, -0.1580047607421875, -0.15234375)
+	local ptc = Instance.new("ParticleEmitter",part)
+	ptc.Brightness = 1
+	ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(100, 255, 100)),ColorSequenceKeypoint.new(1,Color3.fromRGB(100, 255, 100))})
+	ptc.LightEmission = 1 ptc.LightInfluence = 0
+	ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.4,.1),NumberSequenceKeypoint.new(1,.4,.1)})
+	ptc.Texture = "rbxassetid://1053546634"
+	ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,0),NumberSequenceKeypoint.new(1,1)})
+	ptc.Acceleration = Vector3.new(0,.5,0)
+	ptc.ZOffset = 0
+	ptc.EmissionDirection = Enum.NormalId.Top
+	ptc.Lifetime = NumberRange.new(1,4)
+	ptc.Rate = 4
+	ptc.Rotation = NumberRange.new(0,0)
+	ptc.RotSpeed = NumberRange.new(0,0)
+	ptc.Speed = NumberRange.new(.5,.5)
+	ptc.SpreadAngle = Vector2.new(45,45)
+end
+
+local creating = false
+local changed = false
+local function createAvatar()
+	if creating then return end
+	changed = false
+	isBase=not char:FindFirstChild("State2")
+	creating=true
+
+	char:SetAttribute(legalName,currentSkin)
+	local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
+	char:ScaleTo(1)
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if v.Name=="Morph" and not v:GetAttribute("Ignore") or v:IsA("CharacterMesh") then
+			v:Destroy()
+		end
+	end
+	
+	if currentSkin==5 then
+		local cm = Instance.new("CharacterMesh",char)
+		cm.MeshId="48112070"
+		cm.BodyPart = Enum.BodyPart.Torso
+		table.insert(access,cm)
+	end
+	
+	if not plr.Character:FindFirstChildOfClass("Shirt") and plr.Character:FindFirstChildOfClass("Pants") then
+		repeat task.wait() until plr.Character:FindFirstChildOfClass("Shirt") and plr.Character:FindFirstChildOfClass("Pants")
+	end
+
+	task.spawn(function()
+		plr.Character:FindFirstChildOfClass("Shirt").ShirtTemplate = skinTab.shirt
+		plr.Character:FindFirstChildOfClass("Pants").PantsTemplate = skinTab.pants
+		plr.Character:FindFirstChildOfClass("Shirt").Color3 = Color3.fromRGB(255,255,255)
+		plr.Character:FindFirstChildOfClass("Pants").Color3 = Color3.fromRGB(255,255,255)
+	end)
+
+	for i,v in pairs(skinTab.accessories) do
+		task.spawn(function()
+			local acc = createHat(v.mesh,v.texture,not v.cf2 and v.attach or nil,v.color,v.material,v.rf)
+			if not v.cf2 then
+				acc.Weld.C1 = v.cf
+			else
+				acc.CFrame = char[v.attach].CFrame*v.cf2
+				weld(char[v.attach],acc)
+			end
+			acc.Mesh.Scale = (v.scale or Vector3.new(1,1,1))
+		end)
+	end
+	if skinTab.name=="Type Gold" then goldPart() end
+
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if v.Name=="Morph" and not v:GetAttribute("Custom") and not v:GetAttribute("Ignore") then
+			v:Destroy() continue
+		end
+		if table.find(bodyParts,v.Name) then
+			v.Transparency = 0
+			v.Color = skinTab.skinColor
+		elseif v.Name=="FakeHead" then
+			v.Transparency=1
+			if v:FindFirstChildOfClass("Decal") then
+				v:FindFirstChildOfClass("Decal").Transparency=1
+			end
+		end
+	end
+	creating=false
+end
+
+local function animate(id,speed,float)
+	local anim = Instance.new("Animation")
+	anim.AnimationId = id
+	local track = char.Humanoid:LoadAnimation(anim)
+	track.Priority = Enum.AnimationPriority.Action2
+	track:Play(float or .2,1,speed or 1)
+	anim:Destroy()
+	return track
+end
+
+local function createText(TEXT,duration,pos)
+	local part = Instance.new("Part",workspace)
+	part.Massless = true
+	part.Anchored=true
+	part.CFrame = pos
+	part.Size = Vector3.new(15, 5, 0)
+	part.CanCollide = false
+	part.Transparency = 1
+	part.Name = "OHHHHHHHHHHHH"
+	game:GetService("Debris"):AddItem(part,duration+1)
+
+	local gui = Instance.new("BillboardGui",part)
+	gui.Size = UDim2.new(8,0,1,0)
+	gui.AlwaysOnTop = true
+	local text = Instance.new("TextLabel",gui)
+	text.BackgroundTransparency = 1
+	text.TextScaled = true
+	text.Text = ""
+	text.Size = UDim2.new(1,0,.5,0)
+	text.AnchorPoint = Vector2.new(.5,.5)
+	text.Position = UDim2.new(.5,0,.5,0)
+	text.Font = Enum.Font.GrenzeGotisch
+	text.FontFace.Style = Enum.FontStyle.Italic
+	text.TextColor3 = Color3.fromRGB(138, 0, 0)
+	text.TextXAlignment = Enum.TextXAlignment.Left
+	local stroke = Instance.new("UIStroke",text)
+	stroke.Thickness = 3
+
+	text.TextTransparency=1
+	stroke.Transparency=1
+
+	task.spawn(function()
+		for i = 1,#TEXT do
+			text.Text = string.sub(TEXT,0,i)
+			wait(duration/(duration*15))
+		end
+	end)
+
+	task.spawn(function()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=0}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=0}):Play()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(duration+1),{Position=UDim2.new(0.5,0,-.1,0)}):Play()
+		wait(duration)
+		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=1}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=1}):Play()
+	end)
+	return part
+end
+
+local timePassed = {
+	pressed1 = false,
+	pressed1mode = false,
+	pressed2 = false,
+	pressed2mode = false,
+	pressed3 = false,
+	pressed3mode = false,
+	pressed3two = false,
+	pressed4 = false,
+	pressed4mode = false,
+}
+
+function quartIn(t)
+
+	return t * t * t * t;
+end
+
+function quartOut(t)
+
+	return 1 - ((function()
+		t-=1 return t
+	end)()) * t * t * t;
+end
+
+function quartInOut(t)
+
+	return t <= .5 and t * t * t * t * 8 or (1 - (((function()
+		t = t * 2 - 2 return t
+	end)())) * t * t * t) / 2 + .5;
+end
+
+function cubeInOut(t)
+
+	return t <= .5 and t * t * t * 4 or 1 + ((function()
+		t-=1 return t
+	end)()) * t * t * 4;
+end
+
+function cubeOut(t)
+
+	return 1 + ((function()
+		t-=1 return t
+	end)()) * t * t;
+end
+
+function cubeIn(t)
+	return t * t * t;
+end
+
+function linear(t)
+	return t
+end
+
+local tweens = {}
+local funcs = {}
+local waits = {}
+
+local stuff = {
+	xval=0,
+	xval2=0,
+	yval=-3,
+	yval2=0,
+	zval=2,
+
+	xAng=20,
+	yAng=180,
+	zAng=0,
+}
+
+function update(elapsed,obj,info,var,tweenFunc)		
+	info.goal = tonumber(info.goal) or 0 info.start = tonumber(info.start) or 0
+
+	info._secondsSinceStart+=elapsed
+	info.scale=tweenFunc(math.clamp(info._secondsSinceStart/info.duration,0,1))
+	obj[var]=info.start + info.range * info.scale
+
+	info.onUpdate(obj[var], info._secondsSinceStart/info.duration)
+
+	if info._secondsSinceStart<info.duration then return end
+	table.remove(tweens,table.find(tweens,obj))
+	info.onComplete()
+end
+
+local function createTween(tab,info,tweenFunc,upd,fin)
+	local tween = {
+		obj=tab,
+		info={goal=info.goal,start=tab[info.var],_secondsSinceStart=0,scale=0,range=info.goal-tab[info.var],duration=info.duration,onUpdate=upd or function() end,onComplete=fin or function() end},
+		var=info.var,
+		tweenFunc=tweenFunc,
+	}
+	tweens[info.var]=tween
+	return tween
+end
+
+local isSetting = false
+local isCutscene = false
+
+local GTabs = {"WSFuncs","CHRFuncs","PGUIFuncs","HRPFuncs","TSFuncs","THFuncs","FXFuncs","UPDFuncs"}
+
+local function resetCons(dis)
+	isCutscene = false
+	changed=false
+	if plr.PlayerGui:FindFirstChild("FadedThing") then
+		plr.PlayerGui.FadedThing:Destroy()
+	end
+	for i,v in pairs(access) do
+		v:Destroy()
+	end
+	table.clear(tweens)
+	table.clear(funcs)
+	table.clear(waits)
+	stuff = {
+		xval=0,
+		xval2=0,
+		yval=-3,
+		yval2=0,
+		zval=2,
+
+		xAng=20,
+		yAng=180,
+		zAng=0,
+	}
+	for i,v in pairs(cons) do
+		v:Disconnect()
+	end
+	if dis then
+		for i,v in pairs(cons2) do
+			v:Disconnect()
+		end
+		task.spawn(function() plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots[newName]:Destroy() end)
+	end
+	if char and not char:FindFirstChild("Morph") then return end
+	for i,v in pairs(char:GetChildren()) do
+		if v.Name=="Morph" and v:GetAttribute("Custom")==newName then v:Destroy() end
+	end
+end
+
+local isSelected=false
+local checking=false
+
+local input
+local function disable()
+	input:Disconnect()
+	for i,v in pairs(GTabs) do _G[v][newName]={} end
+	for i,v in pairs(access) do
+		v:Destroy()
+	end
+	resetCons(true)
+	if checking and isSelected and char and char:FindFirstChild("Head") then
+		resetBody()
+		game.Players.LocalPlayer:WaitForChild("Backpack"):WaitForChild("ServerTraits"):WaitForChild("Choose"):FireServer(character)
+	end
+	workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+end
+
+local function addCFrame(att,x,y,z,x2,y2,z2)
+	att.CFrame = CFrame.new(x,y,z)*CFrame.Angles(math.rad(x2),math.rad(y2),math.rad(z2))
+end
+
+local canCutscene = true
+
+function setup(arg1)
+	canCutscene=true
+	if arg1:IsA("ImageButton") then
+		local udim2_upvr = UDim2.fromScale(0.06, 1)
+		local Size_upvr = arg1.Size
+		table.insert(cons2,arg1.MouseEnter:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = udim2_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.SelectionGained:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = udim2_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.MouseLeave:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = Size_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.SelectionLost:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = Size_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.MouseButton1Click:Connect(function()
+			currentSkin=data.favorite
+			selected=true
+			checking=true
+			changed=true
+			if selected then return end
+			game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
+		end))
+		table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Play.MouseButton1Click:Connect(function()
+			if checking then isSelected=true selected=true game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
+			else isSelected=false checking=false selected=false char:SetAttribute(legalName,nil)
+			end
+		end))
+	end
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect:GetPropertyChangedSignal("Visible"):Connect(function()
+		if isSelected and checking then return end
+		if not isSelected and checking then
+			selected=false checking=false char:SetAttribute(legalName,nil)
+			resetCons()
+			resetBody()
+		elseif isSelected and not checking then
+			selected=true checking=true
+		end
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Left.MouseButton1Click:Connect(function()
+		if not selected then return end
+		currentSkin=skins[currentSkin-1] and currentSkin-1 or #skins
+		changed=true
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Right.MouseButton1Click:Connect(function()
+		if not selected then return end
+		currentSkin=skins[currentSkin+1] and currentSkin+1 or 1
+		changed=true
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Fav.MouseButton1Click:Connect(function()
+		if not selected then return end
+		data.favorite = currentSkin
+		writefile(legalName..".txt",game:GetService("HttpService"):JSONEncode(data))
+	end))
+	for i,v in pairs(plr.PlayerGui.HUD.CharacterSelect.Characters:GetDescendants()) do
+		if v.Parent.Name=="Slots" and v.Name~=newName and v:IsA("ImageButton") then
+			table.insert(cons2,v.MouseButton1Click:Connect(function()
+				if not checking then return end
+				for i,v in pairs(plr.Character:GetChildren()) do
+					if table.find(bodyParts,v.Name) and v:IsA("BasePart") then
+						v.Transparency = 0
+						v.Color = Color3.fromRGB(234, 184, 146)
+					end
+				end
+				selected=false char:SetAttribute(legalName,nil)
+				checking=false
+				plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = "Type 1"
+				resetCons()
+				if char:FindFirstChild("FakeHead") then
+					char.FakeHead.Transparency=0
+				end
+			end))
+		end
+	end
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.Characters.DescendantAdded:Connect(function(thing)
+		if thing.Parent.Name=="Slots" and thing.Name~=newName and thing:IsA("ImageButton") then
+			table.insert(cons2,thing.MouseButton1Click:Connect(function()
+				if not checking then return end
+				for i,v in pairs(plr.Character:GetChildren()) do
+					if table.find(bodyParts,v.Name) and v:IsA("BasePart") then
+						v.Transparency = 0
+						v.Color = Color3.fromRGB(234, 184, 146)
+					end
+				end
+				selected=false char:SetAttribute(legalName,nil)
+				checking=false
+				plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = "Type 1"
+				resetCons()
+				if char:FindFirstChild("FakeHead") then
+					char.FakeHead.Transparency=0
+				end
+			end))
+		end
+	end))
+	char:WaitForChild("FakeHead")
+	table.insert(cons2,char.FakeHead:GetPropertyChangedSignal("Transparency"):Connect(function()
+		if not selected then return end
+		if char.FakeHead.Transparency~=1 then char.FakeHead.Transparency=1 end
+	end))
+end
+
+function checkButton(thing)
+	plr.PlayerGui:WaitForChild("HUD")
+	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then return end
+	task.wait()
+	for i,v in pairs(cons2) do v:Disconnect() end
+	table.insert(cons2,plr.PlayerGui.HUD.Destroying:Connect(function()
+		wait()
+		checkButton()
+	end))
+	createRoster()
+	local but = plr.PlayerGui.HUD.CharacterSelect.Characters.OnePiece.Slots:FindFirstChildOfClass("ImageButton"):Clone()
+	but.Name = newName
+	but.Parent = plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots
+	but.Image = icon
+	but.LayoutOrder = order or #plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren()+1
+	but.ImageColor3 = Color3.fromRGB(255,255,255)
+	setup(but)
+end
+
+function updateMusic()
+	if workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("MapMusic") and workspace.Map.MapMusic.SoundId=="rbxassetid://1847026742" then
+		workspace.Map.MapMusic.SoundId="rbxasset://testStage.mp3"
+		workspace.Map.MapMusic:Play()
+	end
+end
+
+function createFuncs()
+	print("Creating Funcs...")
+	plr.Character:WaitForChild("Humanoid")
+	plr.Character:WaitForChild("HumanoidRootPart")
+	humr=char.HumanoidRootPart
+	plr.PlayerGui:WaitForChild("HUD")
+
+	_G.PGUIFuncs.AFK = {}
+	_G.PGUIFuncs.AFK.MainFunc = function(thing)
+		if thing.Name=="afker" then
+			thing:WaitForChild("Frame"):WaitForChild("YES")
+			game.ReplicatedStorage.afk:FireServer(thing.Frame.YES.LocalScript)
+		end
+	end
+
+	_G.CHRFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if thing.Name=="Morph" or thing.Name=="Cam" then
+			game:GetService("RunService").RenderStepped:Wait()
+			if not thing:GetAttribute("Custom") and not thing:GetAttribute("Ignore") then
+				thing:Destroy()
+			end
+		end
+	end
+
+	_G.PGUIFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if thing.Name=="ChosoGuiTransform" then
+			task.wait()
+			thing:Destroy()
+		end
+	end
+
+	_G.HRPFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if thing.Name=="Awake_Audio" then
+			thing.Volume=0
+			wait()
+			thing:Destroy()
+		end
+	end
+
+	_G.UPDFuncs[newName].MainFunc=function(elapsed)
+		char=plr.Character
+		if _G[newName]~=currentScript then disable() return end
+		if rosterFrame and rosterFrame.Parent and plr.PlayerGui:FindFirstChild("HUD") then
+			rosterFrame.Visible = plr.PlayerGui.HUD.CharacterSelect.Characters.SAO.Visible
+		end
+		if not selected then return end
+		if isSetting then 
+			char = plr.Character
+			if not char:FindFirstChild("HumanoidRootPart") then return end 
+			humr=char.HumanoidRootPart isSetting=false 
+		end
+
+		updateMusic()
+
+		for i,v in pairs(tweens) do
+			update(elapsed,v.obj,v.info,v.var,v.tweenFunc)
+		end
+		for i,v in pairs(funcs) do
+			v(elapsed)
+		end
+		for i,v in pairs(waits) do
+			if v.elapsed==nil then v.elapsed=0 end
+			v.elapsed+=elapsed
+			if v.elapsed>=v.Time then
+				if not tonumber(i) then waits[i]=nil else table.remove(waits,table.find(waits,v)) end
+				v[1]()
+			end
+		end
+
+		if isCutscene and plr.Character:FindFirstChild("HumanoidRootPart") then
+			if plr.PlayerGui:FindFirstChild("CameraScene") then
+				plr.PlayerGui.CameraScene.Disabled=true
+				plr.PlayerGui.CameraScene:Destroy()
+			end
+			workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+			workspace.CurrentCamera.CFrame = plr.Character.HumanoidRootPart.CFrame*CFrame.Angles(math.rad(stuff.xAng),math.rad(stuff.yAng),math.rad(stuff.zAng))*CFrame.new(stuff.xval+stuff.xval2,stuff.yval+stuff.yval2,stuff.zval)
+		end
+
+		char = plr.Character
+		if (not char:FindFirstChild("HumanoidRootPart") or humr~=char.HumanoidRootPart) and not isSetting then
+			char = plr.Character
+			isSetting=true
+			if not char:FindFirstChild("HumanoidRootPart") then return end
+			resetCons()
+			return
+		end
+
+		local prevBase = isBase
+		isBase=not char:FindFirstChild("State2")
+		if isBase then
+			canCutscene=true
+			isCutscene=false
+		end
+		if prevBase~=isBase then changed=true end
+		local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
+		if not plr.PlayerGui:FindFirstChild("HUD") then return end
+		if selected then
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Title1.Text=newName
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Desc.Text=info
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = skins[currentSkin].name or "Type "..currentSkin
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.C.Text = "S K I N S : "..totalSkins
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Fav.ImageColor3 = currentSkin==data.favorite and Color3.fromRGB(255, 183, 0) or Color3.fromRGB(116, 116, 116)
+			if changeMoves then 
+				for i = 1,4 do
+					plr.PlayerGui.HUD.CharacterSelect.InfoBox["Move"..i].Text=moves.base[i]
+					if plr.PlayerGui.HUD:FindFirstChild(""..i) then
+						plr.PlayerGui.HUD[""..i].TextLabel.Text=moves[isBase and "base" or "mode"][i]
+					end
+				end
+			end
+			if plr.Character:FindFirstChildOfClass("Shirt") and (char:FindFirstChildOfClass("Shirt").ShirtTemplate ~= skinTab.shirt or changed) then
+				createAvatar()
+			end
+		else
+			for i,v in pairs(access) do
+				v:Destroy()
+			end
+			return
+		end
+		for i,v in pairs(char.Humanoid:GetPlayingAnimationTracks()) do
+			if string.find(v.Animation.AnimationId,"180435571") or string.find(v.Animation.AnimationId,"180426354") or string.find(v.Animation.AnimationId,"180435792") or string.find(v.Animation.AnimationId,"125750702") or string.find(v.Animation.AnimationId,"180436148") or string.find(v.Animation.AnimationId,"1357408709") then continue end
+			--print(v.Animation.AnimationId)
+			if string.find(v.Animation.AnimationId,anims.modeAnim) and not isCutscene and canCutscene then
+				char:WaitForChild("State2")
+				stuff = {
+					xval=0,
+					xval2=0,
+					yval=-3,
+					yval2=0,
+					zval=2,
+
+					xAng=20,
+					yAng=180,
+					zAng=0,
+				}
+				v:Stop()
+				isCutscene=true
+				canCutscene=false
+				local anim
+				waits[#waits+1]={Time=3,function()
+					isCutscene=false
+					v:Stop(0)
+					anim:Stop(.5)
+					workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+					workspace.CurrentCamera.DiagonalFieldOfView = 127.76887512207031
+					workspace.CurrentCamera.FieldOfView = 70
+				end}
+				if currentSkin==#skins-1 then
+					local thing =sound("rbxasset://modeMuzanSound.mp3",1.75,char.Torso)
+					thing.TimePosition=.2
+					stuff.xAng=-5
+					stuff.zval=8
+					stuff.yval=1
+					local timeDelay = .4
+					createTween(stuff,{goal=0,var="yAng",duration=1+timeDelay},cubeIn)
+					createTween(stuff,{goal=10,var="xAng",duration=2+timeDelay},cubeOut)
+					waits[#waits+1]={Time=.6+timeDelay,function()
+						anim = animate("rbxassetid://18236366891",1,0)
+						createTween(stuff,{goal=3,var="zval",duration=1},cubeOut)
+					end}
+					waits[#waits+1]={Time=1+timeDelay,function()
+						createTween(stuff,{goal=1,var="yval",duration=2.4},cubeOut)
+						createTween(stuff,{goal=-180,var="yAng",duration=1+timeDelay},cubeOut)
+					end,}
+					waits[#waits+1]={Time=2,function()
+						if anim then anim:AdjustSpeed(0) end
+					end}
+					waits[#waits+1]={Time=3.2,function()
+						if anim then anim:Stop(.5) end
+					end,}
+					local function addTextures(part)
+						for i = 1,6 do
+							local txr = Instance.new("Texture",part)
+							txr.Face = Enum.NormalId[i==1 and "Left" or i==2 and "Right" or i==3 and "Bottom" or i==4 and "Top" or i==5 and "Front" or "Back"]
+							txr.StudsPerTileU = 4
+							txr.StudsPerTileV = 4
+							txr.Texture = "rbxassetid://10329537685"
+							waits[#waits+1]={Time=.5+timeDelay,function()
+								game:GetService("TweenService"):Create(txr,TweenInfo.new(.1),{Transparency=1}):Play()
+							end}
+						end
+					end
+
+					local sphere = Instance.new("Part",workspace)
+					sphere.Name="Sphere"
+					local mesh = Instance.new("SpecialMesh",sphere)
+					mesh.MeshId = "rbxassetid://15523392134"
+					mesh.Scale = Vector3.new(0.2, 0.2, 0.2)
+					sphere.Size = Vector3.new(9.319, 9.798, 9.798)
+					sphere.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame*CFrame.new(0,1.65,0)
+					sphere.CanCollide = false
+					sphere.Anchored = true
+					addTextures(sphere)
+					game:GetService("Debris"):AddItem(sphere,2)
+
+					local num = 0
+
+					local function createBlod(cf)
+						num+=1
+						local outPart = Instance.new("Part",sphere)
+						outPart.CanCollide=false
+						local mesh = Instance.new("SpecialMesh",outPart)
+						mesh.MeshId = "rbxassetid://1502211002"
+						mesh.Scale = Vector3.new(1.8, 1.7, 1.86)
+						outPart.Size = Vector3.new(4.983, 13.833, 4.899)
+						local weld1 = Instance.new("ManualWeld",outPart)
+						weld1.Part0 = sphere
+						weld1.Part1 = outPart
+						weld1.C1 = cf
+						addTextures(outPart)
+						outPart.Name="out"..num
+						waits[#waits+1]={Time=.5+timeDelay,function()
+							outPart.Transparency=1
+						end}
+					end
+
+					createBlod(CFrame.new(2, -2.5, -1)*CFrame.Angles(math.rad(-24.345), math.rad(0), math.rad(155)))
+					createBlod(CFrame.new(2, -2.5, 1)*CFrame.Angles(math.rad(24), math.rad(0), math.rad(155)))
+					createBlod(CFrame.new(-2, -2.5, -1)*CFrame.Angles(math.rad(-24.345), math.rad(0), math.rad(-155)))
+					createBlod(CFrame.new(-2, -2.5, 1)*CFrame.Angles(math.rad(24), math.rad(0), math.rad(-155)))
+					
+					waits[#waits+1]={Time=.4+timeDelay,function()
+						sound("rbxassetid://7441118570",.7,sphere)
+					end}
+					waits[#waits+1]={Time=.5+timeDelay,function()
+						createTween(stuff,{goal=16,var="zval",duration=.1},cubeIn)
+						sphere.Transparency=1
+						for i = 1,2 do
+							local ptc = Instance.new("ParticleEmitter",sphere)
+							ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(100, 0, 0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(100, 0, 0))})
+							ptc.LightEmission = 0 ptc.LightInfluence = 1
+							ptc.Orientation = i==1 and Enum.ParticleOrientation.VelocityParallel or Enum.ParticleOrientation.FacingCamera
+							ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.25,0),NumberSequenceKeypoint.new(1,i==1 and .05 or 3,.25)})
+							ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0,0),NumberSequenceKeypoint.new(1,i==1 and -3 or 0,0)})
+							ptc.Texture = i==1 and "rbxassetid://4509687978" or "rbxassetid://241576804"
+							ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1,0),NumberSequenceKeypoint.new(.25,0,0),NumberSequenceKeypoint.new(1,1,0)})
+							ptc.Acceleration = i==1 and Vector3.new(0,-75,0) or Vector3.new(0,-25,0)
+							ptc.ZOffset = 0
+							ptc.EmissionDirection = Enum.NormalId.Top
+							ptc.Lifetime = i==1 and NumberRange.new(.25,.5) or NumberRange.new(.5,1)
+							ptc.Rate = 0
+							ptc.Rotation = i==1 and NumberRange.new(0,0) or NumberRange.new(-360,360)
+							ptc.RotSpeed = i==1 and NumberRange.new(0,0) or NumberRange.new(-90,90)
+							ptc.Speed = i==1 and NumberRange.new(10,25) or NumberRange.new(10,10)
+							ptc.SpreadAngle = i==1 and Vector2.new(90,90) or Vector2.new(45,45)
+							ptc:Emit(200)
+						end
+					end}
+					local theme = Instance.new("Sound",char.Torso)
+					theme.SoundId = "rbxasset://legMuzanTheme.mp3"
+					theme.Volume = 1.25
+					theme.Name = "Theme"
+					theme:Play()
+					game:GetService("Debris"):AddItem(theme,66)
+					waits[#waits+1]={Time=55,function()
+						game:GetService("TweenService"):Create(theme,TweenInfo.new(5),{Volume=0}):Play()
+					end}
+				else
+					local sound = Instance.new("Sound",char.Head)
+					sound.SoundId = "rbxasset://muzanMode.mp3"
+					sound.Volume = 1
+					sound:Play()
+					sound.TimePosition=.4
+					game:GetService("Debris"):AddItem(sound,5)
+					local theme = Instance.new("Sound",char.Torso)
+					theme.SoundId = "rbxasset://muzanTheme.mp3"
+					theme.Volume = 1
+					theme.Name = "Theme"
+					theme:Play()
+					game:GetService("Debris"):AddItem(theme,66)
+					waits[#waits+1]={Time=60,function()
+						game:GetService("TweenService"):Create(theme,TweenInfo.new(5),{Volume=0}):Play()
+					end}
+					anim = animate("rbxassetid://14391084625",1,0)
+					anim:AdjustSpeed(0.01)
+					task.spawn(function()
+						local ScreenGui = Instance.new("ScreenGui")
+						local yeaaaah = Instance.new("ImageLabel")
+						local yeaaaah_2 = Instance.new("ImageLabel")
+						local yeaaaah_3 = Instance.new("ImageLabel")
+						local yeaaaah_4 = Instance.new("ImageLabel")
+						local mom = Instance.new("ImageLabel")
+						local mom_2 = Instance.new("ImageLabel")
+						local yeaaaah2 = Instance.new("ImageLabel")
+						local yeaaaah2_2 = Instance.new("ImageLabel")
+						local yeaaaah2_3 = Instance.new("ImageLabel")
+						local yeaaaah2_4 = Instance.new("ImageLabel")
+						local dad = Instance.new("ImageLabel")
+						local dad_2 = Instance.new("ImageLabel")
+
+						local yeahhh1 = {yeaaaah,yeaaaah_2,yeaaaah_3,yeaaaah_4}
+						local yeahhh2 = {yeaaaah2,yeaaaah2_2,yeaaaah2_3,yeaaaah2_4}
+
+						ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+						ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+						yeaaaah.Name = "yeaaaah"
+						yeaaaah.Parent = ScreenGui
+						yeaaaah.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah.BackgroundTransparency = 1.000
+						yeaaaah.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah.BorderSizePixel = 0
+						yeaaaah.Position = UDim2.new(-0.252604157, 0, -0.66883117, 0)
+						yeaaaah.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah.Image = "rbxassetid://4704486269"
+						yeaaaah.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah_2.Name = "yeaaaah"
+						yeaaaah_2.Parent = ScreenGui
+						yeaaaah_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah_2.BackgroundTransparency = 1.000
+						yeaaaah_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah_2.BorderSizePixel = 0
+						yeaaaah_2.Position = UDim2.new(-0.0213541668, 0, -0.552875698, 0)
+						yeaaaah_2.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah_2.Image = "rbxassetid://4704486269"
+						yeaaaah_2.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah_3.Name = "yeaaaah"
+						yeaaaah_3.Parent = ScreenGui
+						yeaaaah_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah_3.BackgroundTransparency = 1.000
+						yeaaaah_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah_3.BorderSizePixel = 0
+						yeaaaah_3.Position = UDim2.new(0.275520831, 0, -0.647495389, 0)
+						yeaaaah_3.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah_3.Image = "rbxassetid://4704486269"
+						yeaaaah_3.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah_4.Name = "yeaaaah"
+						yeaaaah_4.Parent = ScreenGui
+						yeaaaah_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah_4.BackgroundTransparency = 1.000
+						yeaaaah_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah_4.BorderSizePixel = 0
+						yeaaaah_4.Position = UDim2.new(0.427604169, 0, -0.528756976, 0)
+						yeaaaah_4.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah_4.Image = "rbxassetid://4704486269"
+						yeaaaah_4.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						mom.Name = "mom"
+						mom.Parent = ScreenGui
+						mom.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						mom.BackgroundTransparency = 1.000
+						mom.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						mom.BorderSizePixel = 0
+						mom.Position = UDim2.new(-0.356249988, 0, -0.189239338, 0)
+						mom.Size = UDim2.new(0, 2642, 0, 383)
+						mom.Image = "rbxassetid://4704486269"
+						mom.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						mom_2.Name = "mom"
+						mom_2.Parent = ScreenGui
+						mom_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						mom_2.BackgroundTransparency = 1.000
+						mom_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						mom_2.BorderSizePixel = 0
+						mom_2.Position = UDim2.new(0.324999988, 0, -0.151205942, 0)
+						mom_2.Size = UDim2.new(0, 2642, 0, 383)
+						mom_2.Image = "rbxassetid://4704486269"
+						mom_2.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah2.Name = "yeaaaah2"
+						yeaaaah2.Parent = ScreenGui
+						yeaaaah2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah2.BackgroundTransparency = 1.000
+						yeaaaah2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah2.BorderSizePixel = 0
+						yeaaaah2.Position = UDim2.new(-0.00937500037, 0, 0.719851553, 0)
+						yeaaaah2.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah2.Image = "rbxassetid://4704486269"
+						yeaaaah2.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah2_2.Name = "yeaaaah2"
+						yeaaaah2_2.Parent = ScreenGui
+						yeaaaah2_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah2_2.BackgroundTransparency = 1.000
+						yeaaaah2_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah2_2.BorderSizePixel = 0
+						yeaaaah2_2.Position = UDim2.new(0.287499994, 0, 0.625231922, 0)
+						yeaaaah2_2.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah2_2.Image = "rbxassetid://4704486269"
+						yeaaaah2_2.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah2_3.Name = "yeaaaah2"
+						yeaaaah2_3.Parent = ScreenGui
+						yeaaaah2_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah2_3.BackgroundTransparency = 1.000
+						yeaaaah2_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah2_3.BorderSizePixel = 0
+						yeaaaah2_3.Position = UDim2.new(0.439583331, 0, 0.743970335, 0)
+						yeaaaah2_3.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah2_3.Image = "rbxassetid://4704486269"
+						yeaaaah2_3.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						yeaaaah2_4.Name = "yeaaaah2"
+						yeaaaah2_4.Parent = ScreenGui
+						yeaaaah2_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						yeaaaah2_4.BackgroundTransparency = 1.000
+						yeaaaah2_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						yeaaaah2_4.BorderSizePixel = 0
+						yeaaaah2_4.Position = UDim2.new(-0.240624979, 0, 0.603896081, 0)
+						yeaaaah2_4.Size = UDim2.new(0, 1643, 0, 1043)
+						yeaaaah2_4.Image = "rbxassetid://4704486269"
+						yeaaaah2_4.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						dad.Name = "dad"
+						dad.Parent = ScreenGui
+						dad.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						dad.BackgroundTransparency = 1.000
+						dad.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						dad.BorderSizePixel = 0
+						dad.Position = UDim2.new(0.307812512, 0, 0.92022264, 0)
+						dad.Size = UDim2.new(0, 2642, 0, 383)
+						dad.Image = "rbxassetid://4704486269"
+						dad.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						dad_2.Name = "dad"
+						dad_2.Parent = ScreenGui
+						dad_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+						dad_2.BackgroundTransparency = 1.000
+						dad_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+						dad_2.BorderSizePixel = 0
+						dad_2.Position = UDim2.new(-0.373437494, 0, 0.882189214, 0)
+						dad_2.Size = UDim2.new(0, 2642, 0, 383)
+						dad_2.Image = "rbxassetid://4704486269"
+						dad_2.ImageColor3 = Color3.fromRGB(0, 0, 0)
+
+						ScreenGui.IgnoreGuiInset=true
+						local image = Instance.new("ImageLabel",ScreenGui)
+						image.BackgroundTransparency=1
+						image.ImageTransparency=0
+						image.Image="rbxassetid://13625103021"
+						image.Size=UDim2.new(1,0,1,0)
+
+						task.spawn(function()
+							for e = 1,100 do
+								for i,v in pairs(yeahhh1) do
+									if not v:GetAttribute("pos") then v:SetAttribute("pos",v.Position) end
+									v.Position = v:GetAttribute("pos")+UDim2.new(math.random(1,2)==2 and -.1 or .1,0,-.1,0)
+									v.ImageTransparency=.5
+								end
+								wait(.05)
+							end
+						end)
+						task.spawn(function()
+							for e = 1,100 do
+								for i,v in pairs(yeahhh2) do
+									if not v:GetAttribute("pos") then v:SetAttribute("pos",v.Position) end
+									v.Position = v:GetAttribute("pos")+UDim2.new(math.random(1,2)==2 and -.1 or .1,0,.1,0)
+									v.ImageTransparency=.5
+								end
+								wait(.05)
+							end
+						end)
+						task.spawn(function()
+							for e = 1,100 do
+								if not mom:GetAttribute("pos") then mom:SetAttribute("pos",mom.Position) end
+								mom.Position = mom:GetAttribute("pos")+UDim2.new(math.random(1,2)==2 and -.1 or .1,0,-.1,0)
+								mom.ImageTransparency = .5
+								if not mom_2:GetAttribute("pos") then mom_2:SetAttribute("pos",mom_2.Position) end
+								mom_2.Position = mom_2:GetAttribute("pos")+UDim2.new(math.random(1,2)==2 and -.1 or .1,0,-.1,0)
+								mom_2.ImageTransparency = .5
+								if not dad:GetAttribute("pos") then dad:SetAttribute("pos",dad.Position) end
+								dad.Position = dad:GetAttribute("pos")+UDim2.new(math.random(1,2)==2 and -.1 or .1,0,.1,0)
+								dad.ImageTransparency = .5
+								if not dad_2:GetAttribute("pos") then dad_2:SetAttribute("pos",dad_2.Position) end
+								dad_2.Position = dad_2:GetAttribute("pos")+UDim2.new(math.random(1,2)==2 and -.1 or .1,0,.1,0)
+								dad_2.ImageTransparency = .5
+								wait(.05)
+							end
+						end)
+
+						waits[#waits+1]={Time=3,function()
+							for i,v in pairs(yeahhh1) do
+								game:GetService("TweenService"):Create(v,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+							end
+							for i,v in pairs(yeahhh2) do
+								game:GetService("TweenService"):Create(v,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+							end
+							game:GetService("TweenService"):Create(mom,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+							game:GetService("TweenService"):Create(mom_2,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+							game:GetService("TweenService"):Create(dad,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+							game:GetService("TweenService"):Create(dad_2,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+							game:GetService("TweenService"):Create(image,TweenInfo.new(1.5),{ImageTransparency=1}):Play()
+						end}
+						waits[#waits+1]={Time=4.5,function()
+							ScreenGui:Destroy()
+						end}
+					end)
+					task.spawn(function()
+						for i = 1,100 do
+							createTween(stuff,{goal=math.random(1,2)==1 and -.005 or .005,var="yval2",duration=.01},cubeOut)
+							createTween(stuff,{goal=math.random(1,2)==1 and -.005 or .005,var="xval2",duration=.01},cubeOut)
+							wait(.01)
+						end
+					end)
+					createTween(stuff,{goal=.7,var="yval",duration=3},cubeOut)
+					waits[#waits+1]={Time=1,function()
+						createTween(stuff,{goal=6,var="zval",duration=4},quartInOut)
+					end}
+					game:GetService("TweenService"):Create(workspace.CurrentCamera, TweenInfo.new(0), {CFrame = plr.Character.HumanoidRootPart.CFrame*CFrame.Angles(math.rad(stuff.xAng),math.rad(stuff.yAng),math.rad(stuff.zAng))*CFrame.new(stuff.xval+stuff.xval2,stuff.yval+stuff.yval2,stuff.zval)}):Play()
+				end
+			elseif string.find(v.Animation.AnimationId,anims.modeAnim) then
+				v:Stop(0)
+			end
+		end
+	end
+end
+
+repeat task.wait() until not plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName)
+for i,v in pairs(GTabs) do _G[v][newName]={} end
+checkButton()
+updateMusic()
+
+input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
+	if chat then return end
+	if key.KeyCode.Name == "M" then
+		disable()
+	end
+end)
+
+if char:FindFirstChildOfClass("Shirt") and char:GetAttribute(legalName) then 
+	currentSkin=char:GetAttribute(legalName) or 1
+	repeat task.wait() 
+		local num = 0 
+		for i,v in pairs(char:GetChildren()) do 
+			if v.Name=="Morph" and not v:GetAttribute("Ignore") then 
+				num+=1 
+			end 
+		end 
+		if num==0 then 
+			break 
+		end 
+	until not char:FindFirstChild("Morph") or _G[newName]~=currentScript 
+	if _G[newName]~=currentScript then return end 
+	selected=true 
+end
+
+if selected then
+	isSelected=true checking=true
+	createAvatar()
+end
+createFuncs()
