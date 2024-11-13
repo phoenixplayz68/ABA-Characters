@@ -1,0 +1,1182 @@
+local plr = game.Players.LocalPlayer
+
+local rosters = {
+	[1]="Dbz", 
+	[2]="Bleach", 
+	[3]="JJK", 
+	[4]="FairyTail", 
+	[5]="Fate", 
+	[6]="HXH", 
+	[7]="JJBA", 
+	[8]="DS", 
+	[9]="MISC", 
+	[10]="NarutoChars", 
+	[11]="OnePiece", 
+	[12]="Prestige", 
+	[13]="SAO"
+}
+
+local customRoster = false
+local rosterImage = "rbxassetid://"
+local rosterName = ""
+local rosterClone = 2
+local roster = 11 -- The roster for the character button - Example: 8 would put the button in the Demon Slayer roster
+
+local order = 16
+
+local rosterFrame = nil
+
+local function createRoster()
+	if customRoster then
+		rosterFrame = plr.PlayerGui:WaitForChild("HUD").CharacterSelect.Characters[rosters[rosterClone]]:Clone()
+		rosterFrame.Visible=false
+		rosterFrame.Icon.Image = rosterImage
+		rosterFrame.Name = rosterName
+		rosterFrame.Parent = plr.PlayerGui.HUD.CharacterSelect.Characters
+		rosters[#rosters+1] = rosterName
+		roster=#rosters
+		for i,v in pairs(rosterFrame.Slots:GetChildren()) do
+			if v:IsA("ImageButton") then v:Destroy() end
+		end
+	end
+end
+
+local icon = "rbxassetid://12908244475" -- The character icon
+
+local character = "Shanks" --The name of the roster character - Example: Zoro [Timeskip]
+local newName = "Gold Roger" --Name of the new character - Example: JellyBean Man
+local legalName = newName:gsub("[^%w%s_]+", ""):gsub(" ","")
+local info = "The King of the Pirates!" --Info of the new character - Example: The Strongest Jelly Bean
+
+local moves = {
+	base = {
+		"Armament Haki",
+		"Future Sight",
+		"Instant Draw",
+		"God's Strike"
+	},
+	mode = {
+		"Haoshoku Haki",
+		"Future Sight",
+		"Divine Slice",
+		"Kamusari"
+	}
+}
+local changeMoves = true --If true then it changes the move names
+
+local anims = {
+	Run = "rbxassetid://1357408709",
+	Block = {new="rbxassetid://1461027506",old="1470442531"},
+	Light1 = {new="rbxassetid://1461128166",old="1470422387"},
+	Light2 = {new="rbxassetid://1461128859",old="1470439852"},
+	Light3 = {new="rbxassetid://1461136273",old="1470449816"},
+	Light4 = {new="rbxassetid://1461136875",old="1470447472"},
+	AnkleBreak = {new="rbxassetid://1461277837",old="1470482438"},
+	LightFinish = {new="rbxassetid://8442981940",old="1470454728"},
+	StraightUp = {new="rbxassetid://1461252313",old="1470532199"},
+	Kickupo = {new="rbxassetid://1461145506",old="1470472673"},
+	HitDown = {new="rbxassetid://1461127258",old="1470495207"},
+
+	move1 = {old="3190491444"},
+	move2 = {old="1731463612"},
+	move3 = {new="rbxassetid://18571907671",old="8506585774"},
+	move3two = {new="rbxassetid://7557023858",old="8503829573"},
+	move4 = {new="rbxassetid://6925724349",old="8508225788"},
+
+	move1mode = {new="rbxassetid://6888472130",old="1481670544"},
+	move2mode = {new="rbxassetid://6325530054",old="6545871856"},
+	move3mode = {new="rbxassetid://15739215246",old="9246190769"},
+
+	modeAnim = {old="3189702249"},
+}
+
+local skins = {
+	[1] = {
+		shirt = "rbxassetid://15663535143",
+		pants = "rbxassetid://15663543230",
+		skinColor = Color3.fromRGB(234, 184, 146),
+		accessories = {
+			face = {mesh="rbxassetid://17744436889",texture="rbxassetid://17744436909",attach="Head",cf=CFrame.new(0,-0.2,.1)*CFrame.Angles(0,math.rad(180),0),scale=Vector3.new(1.1,1.1,1)},
+			hat = {mesh="rbxassetid://13075023912",texture="rbxassetid://13075024611",attach="Head",cf=CFrame.new(0,-1.05,0),scale=Vector3.new(1.1,1,1.12)},
+			cape = {mesh="rbxassetid://7618709064",texture="rbxassetid://7618709157",attach="Torso",cf=CFrame.new(0,.75,-.75),vcolor=Vector3.new(.9,.9,.9)},
+		},
+	},
+	[2] = {
+		shirt = "rbxassetid://15663535143",
+		pants = "rbxassetid://15663543230",
+		skinColor = Color3.fromRGB(234, 184, 146),
+		accessories = {
+			face = {mesh="rbxassetid://15366494117",texture="rbxassetid://15366492187",attach="Head",cf=CFrame.new(0,-0.15,0)*CFrame.Angles(0,math.rad(180),0)},
+			hair = {mesh="rbxassetid://6561306203",texture="rbxassetid://6561306227",attach="Head",cf=CFrame.new(0.02,-.4,-.0),scale=Vector3.new(1,.8,1)},
+			cape = {mesh="rbxassetid://7618709064",texture="rbxassetid://7618709157",attach="Torso",cf=CFrame.new(0,.75,-.75),vcolor=Vector3.new(.9,.9,.9)},
+		},
+	},
+}
+skins[#skins+1]={
+	name = "Type Gold",
+	shirt = "rbxassetid://94767006928578",
+	pants = "rbxassetid://125947470107831",
+	skinColor = Color3.fromRGB(234, 184, 146),	
+	accessories = {
+		face = {mesh="rbxassetid://17744436889",texture="rbxassetid://134361592210235",attach="Head",cf=CFrame.new(0,-0.2,.1)*CFrame.Angles(0,math.rad(180),0),scale=Vector3.new(1.1,1.1,1)},
+		hat = {mesh="rbxassetid://13075023912",texture="rbxassetid://99433223912137",attach="Head",cf=CFrame.new(0,-1.05,0),scale=Vector3.new(1.1,1,1.12)},
+		cape = {mesh="rbxassetid://7618709064",texture="rbxassetid://139657252896312",attach="Torso",cf=CFrame.new(0,.75,-.75),vcolor=Vector3.new(.9,.9,.9)},	
+	},
+}
+
+if _G.AFK==nil then
+	_G.AFK=true
+	local vu = game:GetService("VirtualUser")
+	game:GetService("Players").LocalPlayer.Idled:connect(function()
+		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		wait(1)
+		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	end)
+end
+
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/phoenixplayz68/refs/heads/master/Base%20Character'))()
+repeat task.wait() until _G.UPDFuncs~=nil
+local char = plr.Character
+local humr = char.HumanoidRootPart
+
+local currentSkin = 1
+
+local totalSkins = 0
+for i,v in pairs(skins) do
+	totalSkins+=1
+end
+
+local bodyParts = {"Left Arm","Right Arm","Left Leg","Right Leg","Torso"}
+
+local isBase = true
+local selected = false
+
+_G[newName] = Random.new():NextNumber(1,199591295245)
+local currentScript = _G[newName]
+
+local access = {}
+
+local function createHat(meshid,textid,attach,color,vcolor,material,rf)
+	local model = Instance.new("Model")
+	model.Name = "Morph"
+	model:SetAttribute("Custom",newName)
+	model.Parent = plr.Character
+	local part = Instance.new("Part",model)
+	part.Color=color or Color3.fromRGB(255,255,255)
+	part.CanCollide=false
+	part.Size = Vector3.new(1,1,1)
+	part.Material = Enum.Material[material or "Plastic"]
+	part.Reflectance = rf or 0
+	local mesh = Instance.new("SpecialMesh",part)
+	mesh.MeshId = meshid
+	mesh.TextureId = textid or ""
+	mesh.VertexColor = vcolor or Vector3.new(1,1,1)
+
+	local weld = Instance.new("Weld",part)
+	weld.Part0 = plr.Character:WaitForChild(attach)
+	weld.Part1 = part
+
+	table.insert(access,model)
+	return part
+end
+
+local function sound(id,vol,par,tim)
+	local sound = Instance.new("Sound",par)
+	sound.SoundId = id
+	sound.Volume = vol or 1
+	sound:Play()
+	game:GetService("Debris"):AddItem(sound,tim or 5)
+	return sound
+end
+
+local cons = {}
+local cons2 = {}
+
+local function roundDecimal(value)
+	value *= 100
+	value = math.floor(value)
+	value = value / 100
+	return value
+end
+
+local function resetBody()
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if table.find(bodyParts,v.Name) then
+			v.Transparency = 0
+			v.Color = Color3.fromRGB(234, 184, 146)
+		elseif v.Name=="FakeHead" then
+			v.Transparency = 0
+		end
+	end
+end
+
+local function goldPart()
+	local mod = Instance.new("Model")
+	mod.Name="Morph"
+	mod:SetAttribute("Custom",newName)
+	mod:SetAttribute("Gold",true)
+	mod.Parent=char
+	local part = Instance.new("Part",mod)
+	part.Size = Vector3.new(1.1999995708465576, 5.19999885559082, 3.9000003337860107)
+	part.Transparency=1
+	part.CanCollide=false
+	part.Massless=true
+	local weld = Instance.new("Weld",part)
+	weld.Part0 = char.Torso
+	weld.Part1 = part
+	weld.C1 = CFrame.new(0.0433807373046875, -0.1580047607421875, -0.15234375)
+	local ptc = Instance.new("ParticleEmitter",part)
+	ptc.Brightness = 1
+	ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(100, 255, 100)),ColorSequenceKeypoint.new(1,Color3.fromRGB(100, 255, 100))})
+	ptc.LightEmission = 1 ptc.LightInfluence = 0
+	ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.4,.1),NumberSequenceKeypoint.new(1,.4,.1)})
+	ptc.Texture = "rbxassetid://1053546634"
+	ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,0),NumberSequenceKeypoint.new(1,1)})
+	ptc.Acceleration = Vector3.new(0,.5,0)
+	ptc.ZOffset = 0
+	ptc.EmissionDirection = Enum.NormalId.Top
+	ptc.Lifetime = NumberRange.new(1,4)
+	ptc.Rate = 4
+	ptc.Rotation = NumberRange.new(0,0)
+	ptc.RotSpeed = NumberRange.new(0,0)
+	ptc.Speed = NumberRange.new(.5,.5)
+	ptc.SpreadAngle = Vector2.new(45,45)
+end
+
+local function hakiEffect(part)
+	local att = Instance.new("Attachment",part)
+	att.CFrame = CFrame.new(0.02, 0.536, -0.456)*CFrame.Angles(math.rad(-36.784),math.rad(8.391),math.rad(-5.046))
+	local pc1 = Instance.new("ParticleEmitter",att)
+	pc1.LightEmission = -5 pc1.LightInfluence = 0 pc1.Brightness = 10 pc1.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 0, 0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+	pc1.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,0.757),NumberSequenceKeypoint.new(1,0.225)})
+	pc1.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.859,0),NumberSequenceKeypoint.new(1,1)})
+	pc1.Texture = "rbxassetid://11492870634" pc1.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,.1),NumberSequenceKeypoint.new(1,.1)}) pc1.ZOffset = 0
+	pc1.Lifetime = NumberRange.new(.35,.35) pc1.Rate = 35 pc1.Rotation = NumberRange.new(-360,360) pc1.RotSpeed = NumberRange.new(0,0)
+	pc1.Speed = NumberRange.new(10,10) pc1.LockedToPart=true pc1.FlipbookLayout=Enum.ParticleFlipbookLayout.Grid4x4 pc1.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+	pc1.SpreadAngle = Vector2.new(-5,5) pc1.FlipbookStartRandom=true
+	pc1.EmissionDirection = Enum.NormalId.Bottom
+	pc1.Enabled=false
+end
+
+local function updateSword(thing,thing2)
+	local t = roundDecimal(thing.HiltModel.Union.Transparency)
+	if t==0 or t==.99 then
+		thing2.Transparency = 0
+		thing.HiltModel.Union.Transparency=.99
+		thing2.Attachment.ParticleEmitter.Enabled=not isBase
+	else
+		thing2.Transparency = 1
+		thing.HiltModel.Union.Transparency = 1
+		thing2.Attachment.ParticleEmitter.Enabled=false
+	end
+end
+
+local sheath,sword1
+local blade,sword2
+
+local checkingSH = false
+local checkingBL = false
+
+local function checkPart(thing,alt)
+	if thing:FindFirstChild("SheathedBlade") and not checkingSH then
+		checkingSH=true
+		thing:SetAttribute("Ignore",true)
+		if not alt and thing:WaitForChild("MeshPart") or thing:FindFirstChild("MeshPart") then thing.MeshPart:Destroy() end
+		if not alt and thing.SheathedBlade:WaitForChild("BladeUnion") or thing.SheathedBlade:FindFirstChild("BladeUnion") then thing.SheathedBlade.BladeUnion:Destroy() end
+		if alt and not thing.SheathedBlade:FindFirstChild("Morph") or not alt then
+			task.spawn(function()
+				if thing.SheathedBlade:FindFirstChild("HiltModel") and thing.SheathedBlade.HiltModel:FindFirstChild("Union") and not thing.SheathedBlade.HiltModel:FindFirstChild("cylinder") then return end
+				for e = 1,4 do if thing.SheathedBlade:WaitForChild("HiltModel"):WaitForChild("cylinder") then thing.SheathedBlade.HiltModel.cylinder:Destroy() end end
+			end)
+		end
+		local sword = createHat("rbxassetid://17640973659","rbxassetid://17640980848","Head")
+		sword.Parent.Parent = thing.SheathedBlade
+		sword.Mesh.Scale = Vector3.new(1.5,1.5,1.5)
+		sword.Weld.Part0 = thing.SheathedBlade.HiltModel:WaitForChild("Union")
+		sword.Weld.C1 = CFrame.new(0,1.4,-1.2)*CFrame.Angles(0,math.rad(90),math.rad(56))
+		hakiEffect(sword)
+
+		sheath = thing.SheathedBlade
+		sword1 = sword
+
+		table.insert(cons,thing.SheathedBlade.HiltModel.Union:GetPropertyChangedSignal("Transparency"):Connect(function(t)
+			updateSword(thing.SheathedBlade,sword)
+		end))
+		updateSword(thing.SheathedBlade,sword)
+		checkingSH=false
+		return
+	elseif thing:FindFirstChild("Blade") and not checkingBL then
+		checkingBL=true
+		thing:SetAttribute("Ignore",true)
+		if not alt and thing.Blade:WaitForChild("BladeUnion") or thing.Blade:FindFirstChild("BladeUnion") then thing.Blade.BladeUnion:Destroy() end
+		if alt and not thing.Blade:FindFirstChild("Morph") or not alt then
+			task.spawn(function()
+				if thing.Blade:FindFirstChild("HiltModel") and thing.Blade.HiltModel:FindFirstChild("Union") and not thing.Blade.HiltModel:FindFirstChild("cylinder") then return end
+				for e = 1,4 do if thing.Blade:WaitForChild("HiltModel"):WaitForChild("cylinder") then thing.Blade.HiltModel.cylinder:Destroy() end end
+			end)	
+		end
+		local sword = createHat("rbxassetid://17640973659","rbxassetid://17640980848","Head")
+		sword.Parent.Parent = thing.Blade
+		sword.Mesh.Scale = Vector3.new(1.5,1.5,1.5)
+		sword.Weld.Part0 = thing.Blade.HiltModel:WaitForChild("Union")
+		sword.Weld.C1 = CFrame.new(0,1.4,-1.4)*CFrame.Angles(0,math.rad(90),math.rad(57))
+		hakiEffect(sword)
+
+		blade = thing.Blade
+		sword2 = sword
+
+		table.insert(cons,blade.HiltModel.Union:GetPropertyChangedSignal("Transparency"):Connect(function(t)
+			updateSword(blade,sword2)
+		end))
+		updateSword(blade,sword2)
+		thing:SetAttribute("Ignore",true) 
+		checkingBL=false
+		return
+	end
+end
+
+local creating = false
+local changed = false
+local function createAvatar()
+	if creating then return end
+	changed = false
+	isBase=not char:FindFirstChild("State2")
+	creating=true
+
+	char:SetAttribute(legalName,currentSkin)
+	local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
+	char:ScaleTo(skinTab.scale or 1)
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if v.Name=="Morph" or v:IsA("CharacterMesh") then
+			checkPart(v,true)
+			if v:GetAttribute("Ignore") then continue end
+			v:Destroy()
+		end
+	end
+
+	if not plr.Character:FindFirstChildOfClass("Shirt") and plr.Character:FindFirstChildOfClass("Pants") then
+		repeat task.wait() until plr.Character:FindFirstChildOfClass("Shirt") and plr.Character:FindFirstChildOfClass("Pants")
+	end
+
+	task.spawn(function()
+		plr.Character:FindFirstChildOfClass("Shirt").ShirtTemplate = skinTab.shirt
+		plr.Character:FindFirstChildOfClass("Pants").PantsTemplate = skinTab.pants
+		plr.Character:FindFirstChildOfClass("Shirt").Color3 = Color3.fromRGB(255,255,255)
+		plr.Character:FindFirstChildOfClass("Pants").Color3 = Color3.fromRGB(255,255,255)
+	end)
+
+	for i,v in pairs(skinTab.accessories) do
+		task.spawn(function()
+			local acc = createHat(v.mesh,v.texture,v.attach,v.color,v.vcolor,v.material,v.rf)
+			local cf = v.cf or CFrame.new(0,0,0)
+			local x, y, z = cf:ToEulerAnglesYXZ()
+			cf=CFrame.new(cf.X*char:GetScale(),cf.Y*char:GetScale(),cf.Z*char:GetScale())*CFrame.Angles(x,y,z)
+			acc.Weld.C1 = cf
+			acc.Mesh.Scale = (v.scale or Vector3.new(1,1,1))*char:GetScale()
+		end)
+	end
+	if skinTab.name=="Type Gold" then goldPart() end
+
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if v.Name=="Morph" and not v:GetAttribute("Custom") then
+			if v:GetAttribute("Ignore") then continue end
+			v:Destroy() continue
+		end
+		if table.find(bodyParts,v.Name) then
+			v.Transparency = 0
+			v.Color = skinTab.skinColor
+		elseif v.Name=="FakeHead" then
+			v.Transparency=1
+			if v:FindFirstChildOfClass("Decal") then
+				v:FindFirstChildOfClass("Decal").Transparency=1
+			end
+		end
+	end
+	creating=false
+end
+
+local function animate(id,speed,float)
+	local anim = Instance.new("Animation")
+	anim.AnimationId = id
+	local track = char.Humanoid:LoadAnimation(anim)
+	track.Priority = Enum.AnimationPriority.Action2
+	track:Play(float or .2,1,speed or 1)
+	anim:Destroy()
+	return track
+end
+
+local function createText(TEXT,duration,pos)
+	local part = Instance.new("Part",workspace)
+	part.Massless = true
+	part.Anchored=true
+	part.CFrame = pos
+	part.Size = Vector3.new(15, 5, 0)
+	part.CanCollide = false
+	part.Transparency = 1
+	part.Name = "OHHHHHHHHHHHH"
+	game:GetService("Debris"):AddItem(part,duration+1)
+
+	local gui = Instance.new("BillboardGui",part)
+	gui.Size = UDim2.new(8,0,1,0)
+	gui.AlwaysOnTop = true
+	local text = Instance.new("TextLabel",gui)
+	text.BackgroundTransparency = 1
+	text.TextScaled = true
+	text.Text = ""
+	text.Size = UDim2.new(1,0,.5,0)
+	text.AnchorPoint = Vector2.new(.5,.5)
+	text.Position = UDim2.new(.5,0,.5,0)
+	text.Font = Enum.Font.GrenzeGotisch
+	text.FontFace.Style = Enum.FontStyle.Italic
+	text.TextColor3 = Color3.fromRGB(138, 0, 0)
+	text.TextXAlignment = Enum.TextXAlignment.Left
+	local stroke = Instance.new("UIStroke",text)
+	stroke.Thickness = 3
+
+	text.TextTransparency=1
+	stroke.Transparency=1
+
+	task.spawn(function()
+		for i = 1,#TEXT do
+			text.Text = string.sub(TEXT,0,i)
+			wait(duration/(duration*15))
+		end
+	end)
+
+	task.spawn(function()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=0}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=0}):Play()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(duration+1),{Position=UDim2.new(0.5,0,-.1,0)}):Play()
+		wait(duration)
+		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=1}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=1}):Play()
+	end)
+	return part
+end
+
+local timePassed = {
+	pressed1 = false,
+	pressed1mode = false,
+	pressed2 = false,
+	pressed2mode = false,
+	pressed3 = false,
+	pressed3mode = false,
+	pressed3two = false,
+	pressed4 = false,
+	pressed4mode = false,
+}
+
+function quartIn(t)
+
+	return t * t * t * t;
+end
+
+function quartOut(t)
+
+	return 1 - ((function()
+		t-=1 return t
+	end)()) * t * t * t;
+end
+
+function quartInOut(t)
+
+	return t <= .5 and t * t * t * t * 8 or (1 - (((function()
+		t = t * 2 - 2 return t
+	end)())) * t * t * t) / 2 + .5;
+end
+
+function cubeInOut(t)
+
+	return t <= .5 and t * t * t * 4 or 1 + ((function()
+		t-=1 return t
+	end)()) * t * t * 4;
+end
+
+function cubeOut(t)
+
+	return 1 + ((function()
+		t-=1 return t
+	end)()) * t * t;
+end
+
+function cubeIn(t)
+	return t * t * t;
+end
+
+function linear(t)
+	return t
+end
+
+local tweens = {}
+local funcs = {}
+local waits = {}
+
+local stuff = {
+	xval=0,
+	xval2=0,
+	yval=-3,
+	yval2=0,
+	zval=2,
+
+	xAng=20,
+	yAng=180,
+	zAng=0,
+}
+
+function update(elapsed,obj,info,var,tweenFunc)		
+	info.goal = tonumber(info.goal) or 0 info.start = tonumber(info.start) or 0
+
+	info._secondsSinceStart+=elapsed
+	info.scale=tweenFunc(math.clamp(info._secondsSinceStart/info.duration,0,1))
+	obj[var]=info.start + info.range * info.scale
+
+	info.onUpdate(obj[var], info._secondsSinceStart/info.duration)
+
+	if info._secondsSinceStart<info.duration then return end
+	table.remove(tweens,table.find(tweens,obj))
+	info.onComplete()
+end
+
+local function createTween(tab,info,tweenFunc,upd,fin)
+	local tween = {
+		obj=tab,
+		info={goal=info.goal,start=tab[info.var],_secondsSinceStart=0,scale=0,range=info.goal-tab[info.var],duration=info.duration,onUpdate=upd or function() end,onComplete=fin or function() end},
+		var=info.var,
+		tweenFunc=tweenFunc,
+	}
+	tweens[info.var]=tween
+	return tween
+end
+
+local isSetting = false
+local isCutscene = false
+local ken = false
+local hao = false
+local ht = .5
+local found1 = false
+local found2 = false
+local found3 = false
+
+local GTabs = {"WSFuncs","CHRFuncs","PGUIFuncs","HRPFuncs","TSFuncs","THFuncs","FXFuncs","UPDFuncs"}
+
+local function resetCons(dis)
+	isCutscene = false
+	changed=false
+	ken = false
+	hao = false
+	ht = .5
+	checkingSH = false
+	checkingBL = false
+	found1=false found2=false found3=false
+	if plr.PlayerGui:FindFirstChild("FadedThing") then
+		plr.PlayerGui.FadedThing:Destroy()
+	end
+	table.clear(tweens)
+	table.clear(funcs)
+	table.clear(waits)
+	stuff = {
+		xval=0,
+		xval2=0,
+		yval=-3,
+		yval2=0,
+		zval=2,
+
+		xAng=20,
+		yAng=180,
+		zAng=0,
+	}
+	for i,v in pairs(cons) do
+		v:Disconnect()
+	end
+	if dis then
+		for i,v in pairs(cons2) do
+			v:Disconnect()
+		end
+		task.spawn(function() plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots[newName]:Destroy() end)
+	end
+	if char and not char:FindFirstChild("Morph") then return end
+	for i,v in pairs(char:GetChildren()) do
+		if v.Name=="Morph" and v:GetAttribute("Custom")==newName then v:Destroy() end
+	end
+end
+
+local isSelected=false
+local checking=false
+
+local input
+local function disable()
+	input:Disconnect()
+	for i,v in pairs(GTabs) do _G[v][newName]={} end
+	for i,v in pairs(access) do
+		v:Destroy()
+	end
+	resetCons(true)
+	if checking and isSelected and char and char:FindFirstChild("Head") then
+		resetBody()
+		game.Players.LocalPlayer:WaitForChild("Backpack"):WaitForChild("ServerTraits"):WaitForChild("Choose"):FireServer(character)
+	end
+	workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+end
+
+local function addCFrame(att,x,y,z,x2,y2,z2)
+	att.CFrame = CFrame.new(x,y,z)*CFrame.Angles(math.rad(x2),math.rad(y2),math.rad(z2))
+end
+
+function setup(arg1)
+	if arg1:IsA("ImageButton") then
+		local udim2_upvr = UDim2.fromScale(0.06, 1)
+		local Size_upvr = arg1.Size
+		table.insert(cons2,arg1.MouseEnter:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = udim2_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.SelectionGained:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = udim2_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.MouseLeave:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = Size_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.SelectionLost:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = Size_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.MouseButton1Click:Connect(function()
+			if selected then return end
+			selected=true
+			checking=true
+			changed=true
+			game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
+		end))
+		table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Play.MouseButton1Click:Connect(function()
+			if checking then isSelected=true selected=true game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
+			else isSelected=false checking=false selected=false char:SetAttribute(legalName,nil)
+			end
+		end))
+	end
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect:GetPropertyChangedSignal("Visible"):Connect(function()
+		if isSelected and checking then return end
+		if not isSelected and checking then
+			selected=false checking=false char:SetAttribute(legalName,nil)
+			resetCons()
+			resetBody()
+		elseif isSelected and not checking then
+			selected=true checking=true
+		end
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Left.MouseButton1Click:Connect(function()
+		if not selected then return end
+		currentSkin=skins[currentSkin-1] and currentSkin-1 or #skins
+		changed=true
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Right.MouseButton1Click:Connect(function()
+		if not selected then return end
+		currentSkin=skins[currentSkin+1] and currentSkin+1 or 1
+		changed=true
+	end))
+	for i,v in pairs(plr.PlayerGui.HUD.CharacterSelect.Characters:GetDescendants()) do
+		if v.Parent.Name=="Slots" and v.Name~=newName and v:IsA("ImageButton") then
+			table.insert(cons2,v.MouseButton1Click:Connect(function()
+				if not checking then return end
+				for i,v in pairs(plr.Character:GetChildren()) do
+					if table.find(bodyParts,v.Name) and v:IsA("BasePart") then
+						v.Transparency = 0
+						v.Color = Color3.fromRGB(234, 184, 146)
+					end
+				end
+				selected=false char:SetAttribute(legalName,nil)
+				checking=false
+				plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = "Type 1"
+				currentSkin=1
+				resetCons()
+				if char:FindFirstChild("FakeHead") then
+					char.FakeHead.Transparency=0
+				end
+			end))
+		end
+	end
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.Characters.DescendantAdded:Connect(function(thing)
+		if thing.Parent.Name=="Slots" and thing.Name~=newName and thing:IsA("ImageButton") then
+			table.insert(cons2,thing.MouseButton1Click:Connect(function()
+				if not checking then return end
+				for i,v in pairs(plr.Character:GetChildren()) do
+					if table.find(bodyParts,v.Name) and v:IsA("BasePart") then
+						v.Transparency = 0
+						v.Color = Color3.fromRGB(234, 184, 146)
+					end
+				end
+				selected=false char:SetAttribute(legalName,nil)
+				checking=false
+				plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = "Type 1"
+				currentSkin=1
+				resetCons()
+				if char:FindFirstChild("FakeHead") then
+					char.FakeHead.Transparency=0
+				end
+			end))
+		end
+	end))
+	char:WaitForChild("FakeHead")
+	table.insert(cons2,char.FakeHead:GetPropertyChangedSignal("Transparency"):Connect(function()
+		if not selected then return end
+		if char.FakeHead.Transparency~=1 then char.FakeHead.Transparency=1 end
+	end))
+end
+
+function checkButton(thing)
+	plr.PlayerGui:WaitForChild("HUD")
+	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then return end
+	task.wait()
+	for i,v in pairs(cons2) do v:Disconnect() end
+	table.insert(cons2,plr.PlayerGui.HUD.Destroying:Connect(function()
+		wait()
+		checkButton()
+	end))
+	createRoster()
+	local ogstart = plr.PlayerGui.HUD.CharacterSelect.Characters.OnePiece.Slots["Luffy [Pre-Timeskip]"].AbsolutePosition.X
+	local add = plr.PlayerGui.HUD.CharacterSelect.Characters.OnePiece.Slots["Zoro [Pre-Timeskip]"].AbsolutePosition.X - plr.PlayerGui.HUD.CharacterSelect.Characters.OnePiece.Slots["Luffy [Pre-Timeskip]"].AbsolutePosition.X
+	local pos = {}
+	for i,v in pairs(plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren()) do
+		if not v:IsA("ImageButton") then continue end
+		if not v:GetAttribute("X") then
+			v:SetAttribute("X",v.AbsolutePosition.X)
+		end
+		pos[#pos+1] = {obj=v, X=v:GetAttribute("X")}
+	end
+	for i,v in pairs(pos) do
+		task.spawn(function()
+			local start = ogstart local goal=v.X local count = 1
+			for i = 1,#plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren() do if start>=goal then break end start+=add count+=1 end
+			v.obj.LayoutOrder=count+(order<=count and 1 or 0)
+		end)
+	end
+	local but = plr.PlayerGui.HUD.CharacterSelect.Characters.OnePiece.Slots:FindFirstChildOfClass("ImageButton"):Clone()
+	but.Name = newName
+	but.Parent = plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots
+	but.Image = icon
+	but.LayoutOrder = order or #plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren()+1
+	but.ImageColor3 = Color3.fromRGB(255,255,255)
+	setup(but)
+end
+
+function updateMusic()
+	if workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("MapMusic") and workspace.Map.MapMusic.SoundId=="rbxassetid://1847026742" then
+		workspace.Map.MapMusic.SoundId="rbxasset://testStage.mp3"
+		workspace.Map.MapMusic:Play()
+	end
+end
+
+function createFuncs()
+	print("Creating Funcs...")
+	plr.Character:WaitForChild("Humanoid")
+	plr.Character:WaitForChild("HumanoidRootPart")
+	humr=char.HumanoidRootPart
+	plr.PlayerGui:WaitForChild("HUD")
+
+	_G.PGUIFuncs.AFK = {}
+	_G.PGUIFuncs.AFK.MainFunc = function(thing)
+		if thing.Name=="afker" then
+			thing:WaitForChild("Frame"):WaitForChild("YES")
+			game.ReplicatedStorage.afk:FireServer(thing.Frame.YES.LocalScript)
+		end
+	end
+	
+	_G.THFuncs[newName].MainFunc=function(thing)
+		if not selected or not hao then return end
+		if thing.Name=="Explod" or thing.Name=="Hao" then
+			if found1 then found2=true end
+			found1=true
+			task.wait()
+			thing.Color = Color3.fromRGB(255, 110, 110)
+		elseif thing.Name=="ThinRing" then
+			found3=true
+			task.wait()
+			thing.Color = Color3.fromRGB(102, 0, 0)
+		end
+	end
+	
+	_G.PGUIFuncs[newName].MainFunc=function(thing)
+		if not selected then return end
+		if thing.Name=="ScreenGui" then
+			task.wait()
+			if thing:FindFirstChild("Duration") then
+				ken=true
+				thing.Destroying:Connect(function()
+					ken=false
+					for i,v in pairs(workspace.Live:GetChildren()) do
+						if v:FindFirstChild("KenHL") then
+							v.KenHL:Destroy()
+						end
+					end
+				end)
+				thing.IgnoreGuiInset = true
+				local cc = Instance.new("ColorCorrectionEffect",game.Lighting)
+				cc.TintColor = Color3.fromRGB(255,172,172)
+				waits[#waits+1]={Time=4,function()
+					game:GetService("TweenService"):Create(cc,TweenInfo.new(1),{TintColor=Color3.fromRGB(255,255,255)}):Play()
+					game:GetService("TweenService"):Create(thing.ImageLabel,TweenInfo.new(1),{ImageTransparency=1}):Play()
+					createTween({t=.5},{goal=1,var="t",duration=1},cubeOut,function(val)
+						ht=val
+					end,function()
+						ht=.5
+					end)
+				end}
+				game:GetService("Debris"):AddItem(cc,7)
+				local sound = Instance.new("Sound",char.Torso)
+				sound.SoundId = "rbxasset://rogerhaki.mp3"
+				sound:Play()
+				sound.Volume = .8
+				local dist = Instance.new("DistortionSoundEffect",sound)
+				local sound2 = Instance.new("Sound",workspace)
+				sound2.SoundId = "rbxasset://rogerKen.mp3"
+				sound2:Play()
+				sound2.Volume = 0
+				game:GetService("TweenService"):Create(sound2,TweenInfo.new(50),{Volume=5}):Play()
+				sound2.PlaybackSpeed = .9
+				game:GetService("Debris"):AddItem(sound,5)
+				game:GetService("Debris"):AddItem(sound2,7)
+
+				local att = Instance.new("Attachment",char.Head)
+				att.CFrame = CFrame.new(-0.022, 0.162, -0.582)
+				game:GetService("Debris"):AddItem(att,7)
+				local pc1 = Instance.new("ParticleEmitter",att)
+				pc1.LightEmission = 1 pc1.LightInfluence = 0 pc1.Brightness = 4 pc1.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))}) pc1.ZOffset = 1
+				pc1.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.796,.719),NumberSequenceKeypoint.new(1,4)})
+				pc1.Texture = "rbxassetid://7216854591"
+				pc1.Lifetime = NumberRange.new(.5,.5) pc1.Rate = 20 pc1.RotSpeed = NumberRange.new(-20,20)
+				pc1.Speed = NumberRange.new(0,0) pc1.LockedToPart=true
+				local pc2 = Instance.new("ParticleEmitter",att)
+				pc2.LightEmission = 1 pc2.LightInfluence = 0 pc2.Brightness = 4 pc2.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))}) pc2.ZOffset = 1
+				pc2.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.276,3.94),NumberSequenceKeypoint.new(1,4.56)})
+				pc2.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,1)})
+				pc2.Texture = "rbxassetid://7216856402"
+				pc2.Lifetime = NumberRange.new(.5,.5) pc2.Rate = 3 pc2.RotSpeed = NumberRange.new(-20,20)
+				pc2.Speed = NumberRange.new(0,0) pc2.LockedToPart=true
+				waits[#waits+1]={Time=4,function()
+					if pc1~=nil and pc2~=nil then
+						pc1.Enabled=false pc2.Enabled=false
+					end
+				end}
+			end
+		elseif thing.Name=="HaoSound" then
+			hao=true
+			thing.Volume=0
+			local sound = Instance.new("Sound",plr.PlayerGui)
+			sound.SoundId = "rbxasset://rogerhao.mp3"
+			sound.Volume = .7
+			sound:Play()
+			game:GetService("Debris"):AddItem(sound,15)
+			wait()
+			thing:Destroy()
+			waits[#waits+1]={Time=1,function()
+				hao=false
+				found1=false found2=false found3=false
+			end}
+		end
+	end
+	
+	_G.HRPFuncs[newName].MainFunc=function(thing)
+		if not selected then return end
+		if thing.Name=="Sound" and thing.SoundId == "rbxassetid://315030459" then
+			local sound = Instance.new("Sound",char.Torso)
+			sound.SoundId = "rbxassetid://6394771700"
+			sound:Play()
+			sound.Volume = 3
+			game:GetService("Debris"):AddItem(sound,5)
+			wait()
+			thing:Destroy()
+		end
+	end
+	
+	_G.CHRFuncs[newName].MainFunc=function(thing)
+		if not selected then return end
+		if thing.Name=="Morph" then
+			game:GetService("RunService").RenderStepped:Wait()
+			checkPart(thing)
+			if not thing:GetAttribute("Custom") and not thing:GetAttribute("Ignore") then
+				thing:Destroy()
+			end
+		elseif thing.Name=="HotPart" then
+			wait()
+			thing.Color = Color3.fromRGB(255, 30, 2)
+		elseif thing.Name=="BusoPart" then
+			if not isBase then 
+				thing.Destroying:Connect(function() isBase=true updateSword(sheath,sword1) updateSword(blade,sword2) end)
+			end
+			local sound = Instance.new("Sound",char["Right Arm"])
+			sound.SoundId = "rbxasset://rogerHakiSfx.mp3"
+			sound.Volume = 3
+			sound:Play()
+			game:GetService("Debris"):AddItem(sound,4)
+			local high = Instance.new("Highlight",thing)
+			high.FillTransparency = 1
+			high.OutlineColor = Color3.fromRGB(255, 30, 2)
+			high.Adornee = thing
+			high.DepthMode = Enum.HighlightDepthMode.Occluded
+		end
+	end
+	
+	_G.UPDFuncs[newName].MainFunc=function(elapsed)
+		char=plr.Character
+		if _G[newName]~=currentScript then disable() return end
+		if rosterFrame and rosterFrame.Parent and plr.PlayerGui:FindFirstChild("HUD") then
+			rosterFrame.Visible = plr.PlayerGui.HUD.CharacterSelect.Characters.SAO.Visible
+		end
+		if not selected then return end
+		if isSetting then 
+			char = plr.Character
+			if not char:FindFirstChild("HumanoidRootPart") then return end 
+			humr=char.HumanoidRootPart isSetting=false 
+		end
+		
+		if ken then
+			for i,v in pairs(workspace.Live:GetChildren()) do
+				if not v:FindFirstChild("KenHL") then
+					local high = Instance.new("Highlight",v)
+					high.OutlineColor = Color3.fromRGB(255,0,0)
+					high.FillColor = Color3.fromRGB(255,0,0)
+					high.FillTransparency = .6
+					high.OutlineTransparency = 1
+					high.Name="KenHL"
+				else
+					v.KenHL.FillTransparency=ht
+					v.KenHL.OutlineTransparency=1
+				end
+			end
+		end
+		
+		if found1 and found2 and found3 then
+			hao=false found1=false found2=false found3=false
+		end
+
+		updateMusic()
+
+		for i,v in pairs(tweens) do
+			update(elapsed,v.obj,v.info,v.var,v.tweenFunc)
+		end
+		for i,v in pairs(funcs) do
+			v(elapsed)
+		end
+		for i,v in pairs(waits) do
+			if v.elapsed==nil then v.elapsed=0 end
+			v.elapsed+=elapsed
+			if v.elapsed>=v.Time then
+				if not tonumber(i) then waits[i]=nil else table.remove(waits,table.find(waits,v)) end
+				v[1]()
+			end
+		end
+
+		if isCutscene and plr.Character:FindFirstChild("HumanoidRootPart") then
+			if plr.PlayerGui:FindFirstChild("CameraScene") then
+				plr.PlayerGui.CameraScene.Disabled=true
+				plr.PlayerGui.CameraScene:Destroy()
+			end
+			workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+			workspace.CurrentCamera.CFrame = plr.Character.HumanoidRootPart.CFrame*CFrame.Angles(math.rad(stuff.xAng),math.rad(stuff.yAng),math.rad(stuff.zAng))*CFrame.new(stuff.xval+stuff.xval2,stuff.yval+stuff.yval2,stuff.zval)
+			game:GetService("TweenService"):Create(workspace.CurrentCamera, TweenInfo.new(0), {CFrame = plr.Character.HumanoidRootPart.CFrame*CFrame.Angles(math.rad(stuff.xAng),math.rad(stuff.yAng),math.rad(stuff.zAng))*CFrame.new(stuff.xval+stuff.xval2,stuff.yval+stuff.yval2,stuff.zval)}):Play()	
+		end
+
+		char = plr.Character
+		if (not char:FindFirstChild("HumanoidRootPart") or humr~=char.HumanoidRootPart) and not isSetting then
+			char = plr.Character
+			isSetting=true
+			if not char:FindFirstChild("HumanoidRootPart") then return end
+			resetCons()
+			return
+		end
+
+		isBase=not char:FindFirstChild("State2")
+		local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
+		if not plr.PlayerGui:FindFirstChild("HUD") then return end
+		if selected then
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Title1.Text=newName
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Desc.Text=info
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = skins[currentSkin].name or "Type "..currentSkin
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.C.Text = "S K I N S : "..totalSkins
+			if changeMoves then 
+				for i = 1,4 do
+					plr.PlayerGui.HUD.CharacterSelect.InfoBox["Move"..i].Text=moves.base[i]
+					if plr.PlayerGui.HUD:FindFirstChild(""..i) then
+						plr.PlayerGui.HUD[""..i].TextLabel.Text=moves[isBase and "base" or "mode"][i]
+					end
+				end
+			end
+			if plr.Character:FindFirstChildOfClass("Shirt") and (char:FindFirstChildOfClass("Shirt").ShirtTemplate ~= skinTab.shirt or changed) then
+				createAvatar()
+			end
+		else
+			for i,v in pairs(access) do
+				v:Destroy()
+			end
+			return
+		end
+		local foundMove1 = false
+		local foundMove2 = false
+		for i,v in pairs(char.Humanoid:GetPlayingAnimationTracks()) do
+			if string.find(v.Animation.AnimationId,"180435571") or string.find(v.Animation.AnimationId,"180426354") or string.find(v.Animation.AnimationId,"180435792") or string.find(v.Animation.AnimationId,"125750702") or string.find(v.Animation.AnimationId,"180436148") or string.find(v.Animation.AnimationId,"1357408709") then continue end
+			--print(v.Animation.AnimationId)
+			if string.find(v.Animation.AnimationId,anims.Light1.old) then
+				animate(anims.Light1.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.Light2.old) then
+				animate(anims.Light2.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.Light3.old) then
+				animate(anims.Light3.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.Light4.old) then
+				animate(anims.Light4.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.AnkleBreak.old) then
+				animate(anims.AnkleBreak.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.LightFinish.old) then
+				animate(anims.LightFinish.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.Kickupo.old) then
+				animate(anims.Kickupo.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.StraightUp.old) then
+				animate(anims.StraightUp.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.HitDown.old) then
+				animate(anims.HitDown.new,1,.1) v:Stop(0)
+			elseif string.find(v.Animation.AnimationId,anims.move1.old) then
+				foundMove1=true
+				if timePassed.pressed1 then continue end
+				timePassed.pressed1 = true
+				wait(isBase and .5 or 0)
+				local sound = Instance.new("Sound",char.Torso)
+				sound.Name="Ora"
+				sound.SoundId = isBase and "rbxasset://ora.mp3" or "rbxasset://divine departure.mp3"
+				sound:Play()
+				sound.Volume = 2
+				game:GetService("Debris"):AddItem(sound,1.5)
+				if not isBase then
+					local sound2 = Instance.new("Sound",char["Right Arm"])
+					sound2.Name="Ora"
+					sound2.SoundId = "rbxasset://rogerHakiShock.mp3"
+					sound2:Play()
+					sound2.Volume = 2
+					game:GetService("Debris"):AddItem(sound2,1.5)
+				end
+			elseif string.find(v.Animation.AnimationId,anims.move2.old) then
+				foundMove2=true
+				if timePassed.pressed2 then continue end
+				timePassed.pressed2 = true
+				wait(.3)
+				local sound = Instance.new("Sound",char.Torso)
+				sound.Name="Ha"
+				sound.SoundId = "rbxasset://rogerMove3.mp3"
+				sound:Play()
+				sound.Volume = 3
+				game:GetService("Debris"):AddItem(sound,1.5)
+			elseif string.find(v.Animation.AnimationId,anims.move1mode.old) then
+
+			elseif string.find(v.Animation.AnimationId,anims.move2mode.old) and not timePassed.pressed2mode then
+
+			elseif string.find(v.Animation.AnimationId,anims.move3mode.old) then
+
+			elseif string.find(v.Animation.AnimationId,anims.move3.old) then
+
+			elseif string.find(v.Animation.AnimationId,anims.move3two.old) then
+
+			elseif string.find(v.Animation.AnimationId,anims.move4.old) then
+
+			elseif string.find(v.Animation.AnimationId,anims.modeAnim.old) and not isCutscene then
+				isCutscene=true
+				isBase=false
+				local sound = Instance.new("Sound",char.Head)
+				sound.SoundId = "rbxasset://roger mode.mp3"
+				sound.Volume = 2
+				sound:Play()
+				local sound2 = Instance.new("Sound",char.Head)
+				sound2.SoundId = "rbxasset://RogerMusic.mp3"
+				sound2.Volume = .6
+				sound2:Play()
+				waits[#waits+1]={Time=60,function()
+					game:GetService("TweenService"):Create(sound2,TweenInfo.new(5),{Volume=0}):Play()
+				end}
+				game:GetService("Debris"):AddItem(sound2,65)
+				game:GetService("Debris"):AddItem(sound,5)
+
+				stuff = {
+					xval=0,
+					xval2=0,
+					yval=-.2,
+					yval2=0,
+					zval=4,
+
+					xAng=-50,
+					yAng=200,
+					zAng=0,
+				}
+				createTween(stuff,{goal=1,var="yval",duration=2},cubeOut)
+				createTween(stuff,{goal=3,var="zval",duration=2},quartOut)
+				createTween(stuff,{goal=20,var="xAng",duration=3.5},cubeOut)
+				waits[#waits+1]={Time=2,function()
+					stuff.xval = -.5
+					tweens["yval"]=nil
+					stuff.yval = 2
+					createTween(stuff,{goal=6,var="zval",duration=1.25},cubeOut)
+					createTween(stuff,{goal=-.5,var="yval",duration=1.25},cubeOut)
+					createTween(stuff,{goal=.25,var="xval",duration=1.25},cubeOut)
+					createTween(stuff,{goal=60,var="yAng",duration=1.25},cubeOut)
+				end}
+				waits[#waits+1]={Time=3.25,function()
+					tweens["xval"]=nil tweens["yval"]=nil tweens["zval"]=nil tweens["xAng"]=nil tweens["yAng"]=nil
+					stuff.xval = -1
+					stuff.yval = 1.3
+					stuff.xAng=0 stuff.yAng=170
+					stuff.zval = 1.5
+					createTween(stuff,{goal=1,var="xval",duration=2.5},cubeOut)
+					createTween(stuff,{goal=190,var="yAng",duration=2.5},cubeOut)
+				end}
+				task.spawn(function()
+					repeat task.wait() until not isCutscene or (humr~=nil and char.Humanoid.WalkSpeed==0)
+					if not isCutscene then return end
+					repeat task.wait() until not isCutscene or (humr~=nil and char.Humanoid.WalkSpeed~=0)
+					if not isCutscene then return end
+					isCutscene=false
+					workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+					workspace.CurrentCamera.DiagonalFieldOfView = 127.76887512207031
+					workspace.CurrentCamera.FieldOfView = 70
+				end)
+			end
+		end
+		if timePassed.pressed1==true and not foundMove1 then timePassed.pressed1=false end
+		if timePassed.pressed2==true and not foundMove2 then timePassed.pressed2=false end
+	end
+end
+
+repeat task.wait() until not plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName)
+for i,v in pairs(GTabs) do _G[v][newName]={} end
+checkButton()
+updateMusic()
+
+input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
+	if chat then return end
+	if key.KeyCode.Name == "M" then
+		disable()
+	end
+end)
+
+if char:FindFirstChildOfClass("Shirt") and char:GetAttribute(legalName) then 
+	currentSkin=char:GetAttribute(legalName) or 1
+	repeat task.wait() 
+		local num = 0 
+		for i,v in pairs(char:GetChildren()) do 
+			if v.Name=="Morph" and not v:GetAttribute("Ignore") then 
+				num+=1 
+			end 
+		end 
+		if num==0 then 
+			break 
+		end 
+	until not char:FindFirstChild("Morph") or _G[newName]~=currentScript 
+	if _G[newName]~=currentScript then return end
+	selected=true 
+end
+
+if selected then
+	isSelected=true checking=true
+	createAvatar()
+end
+createFuncs()
