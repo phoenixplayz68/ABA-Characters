@@ -1,5 +1,8 @@
 --Base Stuff
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Basic%20Functions'))()
+repeat task.wait() until _G.ABACons~=nil
+
+local oldAkaza = _G.Akaza
 
 --Characters
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Yoriichi'))()
@@ -8,7 +11,11 @@ loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Ch
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Akaza'))()
 ----
 
-input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
+if _G.input then _G.input:Disconnect() _G.input=nil end
+
+repeat task.wait() until _G.Akaza~=oldAkaza
+
+_G.input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
 	if chat then return end
 	if key.KeyCode.Name == "M" then
 		if _G.ABACons then
