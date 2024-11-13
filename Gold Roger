@@ -727,7 +727,10 @@ function setup(arg1)
 	end))
 end
 
+local makingButton=false
 function checkButton(thing)
+	if makingButton then return end
+	makingButton=true
 	plr.PlayerGui:WaitForChild("HUD")
 	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then return end
 	task.wait()
@@ -761,6 +764,7 @@ function checkButton(thing)
 	but.LayoutOrder = order or #plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren()+1
 	but.ImageColor3 = Color3.fromRGB(255,255,255)
 	setup(but)
+	makingButton=false
 end
 
 function updateMusic()
