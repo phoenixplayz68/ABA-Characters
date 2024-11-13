@@ -203,9 +203,6 @@ skins[#skins+1]={
 			cf=CFrame.new(0.002, -0.181, -0.039), scale=Vector3.new(1.139, 1.033, 0.985)},
 		hair2 = {mesh="rbxassetid://15031245897",texture="rbxassetid://15031245768",attach="Head",
 			cf=CFrame.new(0, 0.235, -0.33), scale=Vector3.new(0.777, 0.678, 0.508)},
-		
-		gun = {mesh="rbxassetid://17780107058",texture="rbxassetid://17780117180",attach="Left Arm",
-			cf2=CFrame.new(-0.00900268555, -1.77400017, -0.307006836, -4.37113883e-08, 0, -1, 1, -4.37113883e-08, -4.37113883e-08, -4.37113883e-08, -1, 1.91068547e-15), scale=Vector3.new(1,1,1)},
 	},
 	modeFit={
 		shirt = "http://www.roblox.com/asset/?id=4757942516",
