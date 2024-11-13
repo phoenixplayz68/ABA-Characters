@@ -640,11 +640,11 @@ function setup(arg1)
 			}):Play()
 		end))
 		table.insert(cons2,arg1.MouseButton1Click:Connect(function()
+			if selected then return end
 			currentSkin=data.favorite
-			selected=true
 			checking=true
 			changed=true
-			if selected then return end
+			selected=true
 			game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
 		end))
 		table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Play.MouseButton1Click:Connect(function()
