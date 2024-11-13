@@ -1,0 +1,20 @@
+--Base Stuff
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Basic%20Functions'))()
+
+--Characters
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Yoriichi'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Muzan'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Gold%20Roger'))()
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Akaza'))()
+----
+
+input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
+	if chat then return end
+	if key.KeyCode.Name == "M" then
+		if _G.ABACons then
+			for i,v in pairs(_G.ABACons) do
+				v:Disconnect()
+			end
+		end
+	end
+end)
