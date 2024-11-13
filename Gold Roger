@@ -44,9 +44,9 @@ end
 local icon = "rbxassetid://12908244475" -- The character icon
 
 local character = "Shanks" --The name of the roster character - Example: Zoro [Timeskip]
-local newName = "Gold Roger" --Name of the new character - Example: JellyBean Man
+local newName = "Gold Roger" --Name of the new character
 local legalName = newName:gsub("[^%w%s_]+", ""):gsub(" ","")
-local info = "The King of the Pirates!" --Info of the new character - Example: The Strongest Jelly Bean
+local info = "The King of the Pirates!" --Info of the new character
 
 local moves = {
 	base = {
