@@ -155,6 +155,7 @@ if _G.AFK==nil then
 	end)
 end
 
+loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/phoenixplayz68/refs/heads/master/Base%20Character'))()
 repeat task.wait() until _G.UPDFuncs~=nil
 local char = plr.Character
 local humr = char.HumanoidRootPart
@@ -173,6 +174,11 @@ local selected = false
 
 _G[newName] = Random.new():NextNumber(1,199591295245)
 local currentScript = _G[newName]
+if _G[newName.."Buttons"]==nil then
+	_G[newName.."Buttons"] = {}
+else
+	for i,v in pairs(_G[newName.."Buttons"]) do v:Destroy() end
+end
 
 local access = {}
 
@@ -788,7 +794,7 @@ function checkButton(thing)
 	if makingButton then return end
 	makingButton=true
 	plr.PlayerGui:WaitForChild("HUD")
-	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then return end
+	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName):Destroy() end
 	task.wait()
 	for i,v in pairs(cons2) do v:Disconnect() end
 	table.insert(cons2,plr.PlayerGui.HUD.Destroying:Connect(function()
@@ -1036,6 +1042,9 @@ function createFuncs()
 		if prevBase~=isBase then changed=true end
 		local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
 		if not plr.PlayerGui:FindFirstChild("HUD") then return end
+		if not plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) or plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and not plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then
+			checkButton()
+		end
 		if selected then
 			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Title1.Text=newName
 			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Desc.Text=info
