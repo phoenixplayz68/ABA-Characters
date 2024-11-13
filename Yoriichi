@@ -155,7 +155,6 @@ if _G.AFK==nil then
 	end)
 end
 
-loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/phoenixplayz68/refs/heads/master/Base%20Character'))()
 repeat task.wait() until _G.UPDFuncs~=nil
 local char = plr.Character
 local humr = char.HumanoidRootPart
@@ -794,7 +793,7 @@ function checkButton(thing)
 	if makingButton then return end
 	makingButton=true
 	plr.PlayerGui:WaitForChild("HUD")
-	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName):Destroy() end
+	for i,v in pairs(_G[newName.."Buttons"]) do v:Destroy() end
 	task.wait()
 	for i,v in pairs(cons2) do v:Disconnect() end
 	table.insert(cons2,plr.PlayerGui.HUD.Destroying:Connect(function()
@@ -808,6 +807,7 @@ function checkButton(thing)
 	but.Image = icon
 	but.LayoutOrder = order or #plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren()+1
 	but.ImageColor3 = Color3.fromRGB(255,255,255)
+	table.insert(_G[newName.."Buttons"],but)
 	setup(but)
 	makingButton=false
 end
