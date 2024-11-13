@@ -1,0 +1,1882 @@
+local plr = game.Players.LocalPlayer
+
+local rosters = {
+	[1]="Dbz", 
+	[2]="Bleach", 
+	[3]="JJK", 
+	[4]="FairyTail", 
+	[5]="Fate", 
+	[6]="HXH", 
+	[7]="JJBA", 
+	[8]="DS", 
+	[9]="MISC", 
+	[10]="NarutoChars", 
+	[11]="OnePiece", 
+	[12]="Prestige", 
+	[13]="SAO"
+}
+
+local customRoster = false
+local rosterImage = "rbxassetid://"
+local rosterName = ""
+local rosterClone = 2
+local roster = 8 -- The roster for the character button - Example: 8 would put the button in the Demon Slayer roster
+
+local order = 2
+
+local rosterFrame = nil
+
+local function createRoster()
+	if customRoster then
+		rosterFrame = plr.PlayerGui:WaitForChild("HUD").CharacterSelect.Characters[rosters[rosterClone]]:Clone()
+		rosterFrame.Visible=false
+		rosterFrame.Icon.Image = rosterImage
+		rosterFrame.Name = rosterName
+		rosterFrame.Parent = plr.PlayerGui.HUD.CharacterSelect.Characters
+		rosters[#rosters+1] = rosterName
+		roster=#rosters
+		for i,v in pairs(rosterFrame.Slots:GetChildren()) do
+			if v:IsA("ImageButton") then v:Destroy() end
+		end
+	end
+end
+
+local icon = "rbxassetid://17876709662" -- The character icon
+
+local character = "Zoro [Timeskip]" --The name of the roster character - Example: Zoro [Timeskip]
+local newName = "Yoriichi Tsugikuni" --Name of the new character
+local info = "Most powerful Demon Slayer" --Info of the new character
+local legalName = newName:gsub("[^%w%s_]+", ""):gsub(" ","")
+
+if not isfile(legalName..".txt") then
+	writefile(legalName..".txt",game:GetService("HttpService"):JSONEncode({favorite=1}))
+end
+
+local data = game:GetService("HttpService"):JSONDecode(readfile(legalName..".txt"))
+
+local moves = {
+	base = {
+		"Dragon Sun Halo Head Dance",
+		"Sunflower Thrust",
+		"Dance",
+		"Raging Sun"
+	},
+	mode = {
+		"Beneficent Radiance",
+		"Fake Rainbow",
+		"Burning Bones Summer Sun",
+		"Solar Heat Haze"
+	}
+}
+
+local changeMoves = true --If true then it changes the move names
+local customMode = true -- If true then it lets you do custom mode animation
+
+local anims = {
+	modeAnim="5375150799",
+	Light1 = {new="rbxassetid://1470422387",old="1730596371"},
+	Light2 = {new="rbxassetid://1470439852",old="1730606513"},
+	Light3 = {new="rbxassetid://1470449816",old="1730618971"},
+	Light4 = {new="rbxassetid://1470447472",old="1730629532"},
+	LightFinish = {new="rbxassetid://1470454728",old="1730640014"},
+	Uptilt = "1470472673",
+	Downslam = "1470495207",
+	Dropkick = "1461157246",
+	Upfling = "1470532199",
+	Downtilt = "1470482438",
+
+	move1 = {new="rbxassetid://8522585316",old="5374673884"},
+	move1mode = {new="rbxassetid://5606918067",old="1732907106"},
+	move2 = {new="rbxassetid://1932686600",old="5374087642"},
+	move2mode = {new="rbxassetid://1731404034",old="1731404034"}, 
+	move3 = {new="rbxassetid://10006551970",old="5374057713"},
+	move3mode = {new="rbxassetid://6749908996"}, 
+	move4 = {new="rbxassetid://5607799013",old="1730640014"},
+	move4mode = {new="rbxassetid://12499311307",old="5374716492"}, 
+}
+
+local skins = {
+	[1] = {
+		shirt = "",
+		pants = "",
+		skinColor = Color3.fromRGB(203, 161, 125),	
+		accessories = {
+			face = {mesh="rbxassetid://16782851695",texture="rbxassetid://16791884264",attach="Head"},
+			hair = {mesh="rbxassetid://116553013775762",texture="rbxassetid://111754472697355",attach="Head",
+				cf=CFrame.new(-0.007, 0.577, -0.416), scale=Vector3.new(1, 1, 1)},
+
+			shirt = {mesh="rbxassetid://17755237420",texture="rbxassetid://17755237600",attach="Torso",
+				cf=CFrame.new(-0.005, 0.745, -0.058), scale=Vector3.new(0.936, 1.109, 1)},
+
+			lsleeve = {mesh="rbxassetid://17755199319",texture="rbxassetid://17754995899",attach="Left Arm",
+				cf=CFrame.new(0.037, 0.001, -0.017), scale=Vector3.new(0.989, 1.376, 0.958)},
+			rsleeve = {mesh="rbxassetid://17755199565",texture="rbxassetid://17754995899",attach="Right Arm",
+				cf=CFrame.new(-0.033, 0.003, -0.019), scale=Vector3.new(0.989, 1.376, 0.958)},
+
+			rleg = {mesh="rbxassetid://8046814359",texture="rbxassetid://16558969186",attach="Right Leg",
+				cf=CFrame.new(-0.006, -0.151, 0.001), scale=Vector3.new(0.038, 0.036, 0.036)},
+			lleg = {mesh="rbxassetid://8046814359",texture="rbxassetid://16558969186",attach="Left Leg",
+				cf=CFrame.new(-0.006, -0.151, 0.001)*CFrame.Angles(0,math.rad(180),0), scale=Vector3.new(0.038, 0.036, 0.036)},
+
+			rsandle = {mesh="rbxassetid://10730354737",texture="",attach="Right Leg",
+				cf=CFrame.new(0.02, 0.879, 0.045), scale=Vector3.new(0.114, 0.09, 0.108), color=Color3.fromRGB(173, 158, 124),material="SmoothPlastic"},
+			lsandle = {mesh="rbxassetid://10730354737",texture="",attach="Left Leg",
+				cf=CFrame.new(0.02, 0.879, 0.045), scale=Vector3.new(0.114, 0.09, 0.108), color=Color3.fromRGB(173, 158, 124),material="SmoothPlastic"},
+
+			sword = {mesh="rbxassetid://136755268130124",texture="rbxassetid://124307011648439",attach="Right Arm",
+				cf=CFrame.new(0,-0.3,0.03)*CFrame.Angles(math.rad(-90),math.rad(15),math.rad(-90)), scale=Vector3.new(1, 1, 1)},
+		},
+	},
+}
+skins[1].modeFit=table.clone(skins[1])
+skins[1].modeFit.accessories=table.clone(skins[1].accessories)
+skins[1].modeFit.accessories.face = {mesh="rbxassetid://16782851695",texture="rbxassetid://17724022363",attach="Head",scale=Vector3.new(1.01,1.01,1.01)}
+--[[skins[#skins+1]={
+	name = "Type Gold",
+	shirt = "rbxassetid://",
+	pants = "rbxassetid://",
+	skinColor = Color3.fromRGB(255, 170, 127),	
+	accessories = {},
+	modeFit={
+		shirt = "rbxassetid://18426116118",
+		pants = "",
+		skinColor = Color3.fromRGB(255, 170, 127),	
+		accessories = {},
+	}
+}]]
+
+if _G.AFK==nil then
+	_G.AFK=true
+	local vu = game:GetService("VirtualUser")
+	game:GetService("Players").LocalPlayer.Idled:connect(function()
+		vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+		wait(1)
+		vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+	end)
+end
+
+repeat task.wait() until _G.UPDFuncs~=nil
+local char = plr.Character
+local humr = char.HumanoidRootPart
+
+local currentSkin = data.favorite
+
+local totalSkins = 0
+for i,v in pairs(skins) do
+	totalSkins+=1
+end
+
+local bodyParts = {"Left Arm","Right Arm","Left Leg","Right Leg","Torso"}
+
+local isBase = true
+local selected = false
+
+_G[newName] = Random.new():NextNumber(1,199591295245)
+local currentScript = _G[newName]
+
+local access = {}
+
+function weld(x, y)
+	if x == y then return end
+	local CJ = CFrame.new(x.Position)
+	local w = Instance.new("ManualWeld")
+	w.Part0 = x
+	w.Part1 = y
+	w.C0 = x.CFrame:inverse() * CJ
+	w.C1 = y.CFrame:inverse() * CJ
+	w.Parent = x
+	return w
+end
+
+local function createHat(meshid,textid,attach,color,material,rf,tp)
+	local model = Instance.new("Model")
+	model.Name = "Morph"
+	model:SetAttribute("Custom",newName)
+	model.Parent = plr.Character
+	local part = Instance.new("Part",model)
+	part.Color=color or Color3.fromRGB(255,255,255)
+	part.CanCollide=false
+	part.Size = Vector3.new(1,1,1)
+	part.Material = Enum.Material[material or "Plastic"]
+	part.Reflectance = rf or 0
+	part.Transparency = tp or 0
+	local mesh = Instance.new("SpecialMesh",part)
+	mesh.MeshId = meshid
+	mesh.TextureId = textid or ""
+
+	if attach~=nil then
+		local weld = Instance.new("Weld",part)
+		weld.Part0 = plr.Character:WaitForChild(attach)
+		weld.Part1 = part
+	end
+
+	table.insert(access,model)
+	return part
+end
+
+local function sound(id,vol,par,tim)
+	local sound = Instance.new("Sound",par)
+	sound.SoundId = id
+	sound.Volume = vol or 1
+	sound:Play()
+	game:GetService("Debris"):AddItem(sound,tim or 5)
+	return sound
+end
+
+local cons = {}
+local cons2 = {}
+
+local function roundDecimal(value)
+	value *= 100
+	value = math.floor(value)
+	value = value / 100
+	return value
+end
+
+local function resetBody()
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if table.find(bodyParts,v.Name) then
+			v.Transparency = 0
+			v.Color = Color3.fromRGB(234, 184, 146)
+		elseif v.Name=="FakeHead" then
+			v.Transparency = 0
+		end
+	end
+end
+
+local sword
+local shisui
+
+local function swordFX(par)
+	if par:FindFirstChild("FLAMES") then return end
+	local att1
+	local att2
+	for i = 1,2 do
+		local att = Instance.new("Attachment",par)
+		att.CFrame = i==1 and CFrame.new(2.5, -0.1, 0) or CFrame.new(-1.5, -0.1, 0)
+		if i==1 then att1=att else att2=att end
+	end
+	att1.Name="FLAMES"
+	for i = 1,4 do
+		local trail = Instance.new("Trail",par)
+		trail.Attachment0 = att1
+		trail.Attachment1 = att2
+		trail.Color = (i==1 or i==2) and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+			or ColorSequence.new({ColorSequenceKeypoint.new(0,(i==3 and Color3.fromRGB(255,57,57) or Color3.fromRGB(255,118,0))),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))})
+		trail.Brightness = i~=4 and 1 or 3
+		trail.LightEmission = i==1 and .55 or i==4 and 1 or .5
+		trail.LightInfluence = 0
+		trail.Texture = i==1 and "rbxassetid://8502019872" or i==2 and "rbxassetid://8502104530" or i==3 and "rbxassetid://4492997986" or i==4 and "rbxassetid://8501992122"
+		trail.TextureLength = i~=3 and 1 or 50
+		trail.TextureMode = i~=3 and Enum.TextureMode.Stretch or Enum.TextureMode.Wrap
+		trail.Transparency = (i==1 or i==2) and NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.412,0),NumberSequenceKeypoint.new(1,1)})
+			or i==3 and NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.499,.5),NumberSequenceKeypoint.new(.799,1),NumberSequenceKeypoint.new(1,1)})
+			or i==4 and NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,1)})
+		trail.Lifetime = i~=3 and .5 or .2
+		trail.MinLength = .1
+		trail.WidthScale = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(1,0)})
+	end
+end
+
+local function goldPart()
+	local mod = Instance.new("Model")
+	mod.Name="Morph"
+	mod:SetAttribute("Custom",newName)
+	mod:SetAttribute("Gold",true)
+	mod.Parent=char
+	local part = Instance.new("Part",mod)
+	part.Size = Vector3.new(1.1999995708465576, 5.19999885559082, 3.9000003337860107)
+	part.Transparency=1
+	part.CanCollide=false
+	part.Massless=true
+	local weld = Instance.new("Weld",part)
+	weld.Part0 = char.Torso
+	weld.Part1 = part
+	weld.C1 = CFrame.new(0.0433807373046875, -0.1580047607421875, -0.15234375)
+	local ptc = Instance.new("ParticleEmitter",part)
+	ptc.Brightness = 1
+	ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(100, 255, 100)),ColorSequenceKeypoint.new(1,Color3.fromRGB(100, 255, 100))})
+	ptc.LightEmission = 1 ptc.LightInfluence = 0
+	ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.4,.1),NumberSequenceKeypoint.new(1,.4,.1)})
+	ptc.Texture = "rbxassetid://1053546634"
+	ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,0),NumberSequenceKeypoint.new(1,1)})
+	ptc.Acceleration = Vector3.new(0,.5,0)
+	ptc.ZOffset = 0
+	ptc.EmissionDirection = Enum.NormalId.Top
+	ptc.Lifetime = NumberRange.new(1,4)
+	ptc.Rate = 4
+	ptc.Rotation = NumberRange.new(0,0)
+	ptc.RotSpeed = NumberRange.new(0,0)
+	ptc.Speed = NumberRange.new(.5,.5)
+	ptc.SpreadAngle = Vector2.new(45,45)
+end
+
+local function createAura()
+	for i = 1,5 do
+		local limb = i==1 and "Left Arm" or i==2 and "Right Arm" or i==3 and "Left Leg" or i==4 and "Right Leg" or i==5 and "Head"
+		if char[limb]:FindFirstChild("fargossoulmod") then continue end
+		local att = Instance.new("Attachment",char[limb])
+		att.Name="fargossoulmod"
+
+		local ptc = Instance.new("ParticleEmitter",att)
+		ptc.Brightness = 3
+		ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,183,0)),ColorSequenceKeypoint.new(.728,Color3.fromRGB(255,13,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+		ptc.LightEmission = .5
+		ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,2.25),NumberSequenceKeypoint.new(1,2.25)})
+		ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0.1),NumberSequenceKeypoint.new(1,0.1)})
+		ptc.Texture = "http://www.roblox.com/asset/?id=13891888154"
+		ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.119,.0938),NumberSequenceKeypoint.new(.471,.244),NumberSequenceKeypoint.new(1,1)})
+		ptc.ZOffset = -1
+		ptc.EmissionDirection = Enum.NormalId.Front
+		ptc.Lifetime = NumberRange.new(1,1)
+		ptc.Rate = 2
+		ptc.Rotation = NumberRange.new(0,0)
+		ptc.RotSpeed = NumberRange.new(0,0)
+		ptc.Speed = NumberRange.new(0,1.5)
+		ptc.SpreadAngle = Vector2.new(360,360)
+		ptc.FlipbookFramerate = NumberRange.new(30,30)
+		ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid8x8
+		ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+		ptc.LockedToPart = true
+
+
+		local ptc = Instance.new("ParticleEmitter",att)
+		ptc.Brightness = 3
+		ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,179,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,162,0))})
+		ptc.LightEmission = .5
+		ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.65),NumberSequenceKeypoint.new(1,.65)})
+		ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0.1),NumberSequenceKeypoint.new(1,0.1)})
+		ptc.Texture = "http://www.roblox.com/asset/?id=15157075333"
+		ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.119,.0938),NumberSequenceKeypoint.new(.471,.244),NumberSequenceKeypoint.new(1,1)})
+		ptc.ZOffset = -1
+		ptc.EmissionDirection = Enum.NormalId.Front
+		ptc.Lifetime = NumberRange.new(.55,1)
+		ptc.Rate = 15
+		ptc.Rotation = NumberRange.new(-360,360)
+		ptc.RotSpeed = NumberRange.new(0,0)
+		ptc.Speed = NumberRange.new(0,2.5)
+		ptc.SpreadAngle = Vector2.new(360,360)
+		ptc.FlipbookFramerate = NumberRange.new(30,30)
+		ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+		ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+		ptc.ShapeInOut = Enum.ParticleEmitterShapeInOut.Inward
+		ptc.LockedToPart = true
+	end
+end
+
+local function removeAura()
+	if char and char:FindFirstChild("HumanoidRootPart") then
+		if char["Left Arm"]:FindFirstChild("fargossoulmod") then char["Left Arm"].fargossoulmod:Destroy() end
+		if char["Right Arm"]:FindFirstChild("fargossoulmod") then char["Right Arm"].fargossoulmod:Destroy() end
+		if char["Left Leg"]:FindFirstChild("fargossoulmod") then char["Left Leg"].fargossoulmod:Destroy() end
+		if char["Right Leg"]:FindFirstChild("fargossoulmod") then char["Right Leg"].fargossoulmod:Destroy() end
+		if char["Head"]:FindFirstChild("fargossoulmod") then char["Head"].fargossoulmod:Destroy() end
+	end
+end
+
+local creating = false
+local changed = false
+local function createAvatar()
+	if creating then return end
+	changed = false
+	isBase=not char:FindFirstChild("State2")
+	creating=true
+
+	char:SetAttribute(legalName,currentSkin)
+	local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
+	char:ScaleTo(1)
+	
+	local found=false
+	repeat game:GetService("RunService").RenderStepped:Wait()
+		for i,v in pairs(plr.Character:GetChildren()) do
+			if v.Name=="Morph" then
+				if v:FindFirstChild("Shisui") then
+					found=true break
+				end
+			end
+		end
+	until found
+	
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if v.Name=="Morph" and not v:GetAttribute("Ignore") or v:IsA("CharacterMesh") then
+			if v:FindFirstChild("Shisui") then
+				v:SetAttribute("Ignore",true) continue
+			end
+			v:Destroy()
+		end
+	end
+
+	if not plr.Character:FindFirstChildOfClass("Shirt") and plr.Character:FindFirstChildOfClass("Pants") then
+		repeat task.wait() until plr.Character:FindFirstChildOfClass("Shirt") and plr.Character:FindFirstChildOfClass("Pants")
+	end
+
+	plr.Character:FindFirstChildOfClass("Shirt").ShirtTemplate = skinTab.shirt
+	plr.Character:FindFirstChildOfClass("Pants").PantsTemplate = skinTab.pants
+	plr.Character:FindFirstChildOfClass("Shirt").Color3 = Color3.fromRGB(255,255,255)
+	plr.Character:FindFirstChildOfClass("Pants").Color3 = Color3.fromRGB(255,255,255)
+
+	for i,v in pairs(skinTab.accessories) do
+		task.spawn(function()
+			local acc = createHat(v.mesh,v.texture,not v.cf2 and v.attach or nil,v.color,v.material,v.rf,v.tp)
+			if not v.cf2 then
+				acc.Weld.C1 = v.cf or CFrame.new(0,0,0)
+			else
+				acc.CFrame = char[v.attach].CFrame*v.cf2
+				weld(char[v.attach],acc)
+			end
+			acc.Mesh.Scale = (v.scale or Vector3.new(1,1,1))*char:GetScale()
+			if i=="sword" then sword=acc end
+		end)
+	end
+	if skinTab.name=="Type Gold" then goldPart() end
+
+	for i,v in pairs(plr.Character:GetChildren()) do
+		if v.Name=="Morph" then
+			if v:FindFirstChild("Shisui") then
+				v.Shisui.Transparency=1
+				shisui=v.Shisui
+				sword.Weld.Part0 = v.Shisui
+				v:SetAttribute("Ignore",true)
+			elseif not v:GetAttribute("Custom") and not v:GetAttribute("Ignore") then
+				v:Destroy()
+			end continue
+		end
+		if table.find(bodyParts,v.Name) then
+			v.Transparency = 0
+			v.Color = skinTab.skinColor
+		elseif v.Name=="FakeHead" then
+			v.Transparency=1
+			if v:FindFirstChildOfClass("Decal") then
+				v:FindFirstChildOfClass("Decal").Transparency=1
+			end
+		end
+	end
+	swordFX(sword)
+	creating=false
+end
+
+local function animate(id,speed,float)
+	local anim = Instance.new("Animation")
+	anim.AnimationId = id
+	local track = char.Humanoid:LoadAnimation(anim)
+	track.Priority = Enum.AnimationPriority.Action2
+	track:Play(float or .2,1,speed or 1)
+	anim:Destroy()
+	return track
+end
+
+local function createText(TEXT,duration,pos)
+	local part = Instance.new("Part",workspace)
+	part.Massless = true
+	part.Anchored=true
+	part.CFrame = pos
+	part.Size = Vector3.new(15, 5, 0)
+	part.CanCollide = false
+	part.Transparency = 1
+	part.Name = "OHHHHHHHHHHHH"
+	game:GetService("Debris"):AddItem(part,duration+1)
+
+	local gui = Instance.new("BillboardGui",part)
+	gui.Size = UDim2.new(8,0,1,0)
+	gui.AlwaysOnTop = true
+	local text = Instance.new("TextLabel",gui)
+	text.BackgroundTransparency = 1
+	text.TextScaled = true
+	text.Text = ""
+	text.Size = UDim2.new(1,0,.5,0)
+	text.AnchorPoint = Vector2.new(.5,.5)
+	text.Position = UDim2.new(.5,0,.5,0)
+	text.Font = Enum.Font.GrenzeGotisch
+	text.FontFace.Style = Enum.FontStyle.Italic
+	text.TextColor3 = Color3.fromRGB(138, 0, 0)
+	text.TextXAlignment = Enum.TextXAlignment.Left
+	local stroke = Instance.new("UIStroke",text)
+	stroke.Thickness = 3
+
+	text.TextTransparency=1
+	stroke.Transparency=1
+
+	task.spawn(function()
+		for i = 1,#TEXT do
+			text.Text = string.sub(TEXT,0,i)
+			wait(duration/(duration*15))
+		end
+	end)
+
+	task.spawn(function()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=0}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=0}):Play()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(duration+1),{Position=UDim2.new(0.5,0,-.1,0)}):Play()
+		wait(duration)
+		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=1}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=1}):Play()
+	end)
+	return part
+end
+
+local timePassed = {
+	pressed1 = false,
+	pressed1mode = false,
+	pressed2 = false,
+	pressed2mode = false,
+	pressed3 = false,
+	pressed3mode = false,
+	pressed3two = false,
+	pressed4 = false,
+	pressed4mode = false,
+}
+
+function quartIn(t)
+
+	return t * t * t * t;
+end
+
+function quartOut(t)
+
+	return 1 - ((function()
+		t-=1 return t
+	end)()) * t * t * t;
+end
+
+function quartInOut(t)
+
+	return t <= .5 and t * t * t * t * 8 or (1 - (((function()
+		t = t * 2 - 2 return t
+	end)())) * t * t * t) / 2 + .5;
+end
+
+function cubeInOut(t)
+
+	return t <= .5 and t * t * t * 4 or 1 + ((function()
+		t-=1 return t
+	end)()) * t * t * 4;
+end
+
+function cubeOut(t)
+
+	return 1 + ((function()
+		t-=1 return t
+	end)()) * t * t;
+end
+
+function cubeIn(t)
+	return t * t * t;
+end
+
+function linear(t)
+	return t
+end
+
+local tweens = {}
+local funcs = {}
+local waits = {}
+
+local stuff = {
+	xval=0,
+	xval2=0,
+	yval=-3,
+	yval2=0,
+	zval=2,
+
+	xAng=20,
+	yAng=180,
+	zAng=0,
+}
+
+function update(elapsed,obj,info,var,tweenFunc)		
+	info.goal = tonumber(info.goal) or 0 info.start = tonumber(info.start) or 0
+
+	info._secondsSinceStart+=elapsed
+	info.scale=tweenFunc(math.clamp(info._secondsSinceStart/info.duration,0,1))
+	obj[var]=info.start + info.range * info.scale
+
+	info.onUpdate(obj[var], info._secondsSinceStart/info.duration)
+
+	if info._secondsSinceStart<info.duration then return end
+	table.remove(tweens,table.find(tweens,obj))
+	info.onComplete()
+end
+
+local function createTween(tab,info,tweenFunc,upd,fin)
+	local tween = {
+		obj=tab,
+		info={goal=info.goal,start=tab[info.var],_secondsSinceStart=0,scale=0,range=info.goal-tab[info.var],duration=info.duration,onUpdate=upd or function() end,onComplete=fin or function() end},
+		var=info.var,
+		tweenFunc=tweenFunc,
+	}
+	tweens[info.var]=tween
+	return tween
+end
+
+local isSetting = false
+local isCutscene = false
+
+local timeWithin = 0
+
+local GTabs = {"WSFuncs","CHRFuncs","PGUIFuncs","HRPFuncs","TSFuncs","THFuncs","FXFuncs","UPDFuncs"}
+
+
+local function resetCons(dis)
+	isCutscene = false
+	changed=false
+	if plr.PlayerGui:FindFirstChild("FadedThing") then
+		plr.PlayerGui.FadedThing:Destroy()
+	end
+	table.clear(tweens)
+	table.clear(funcs)
+	table.clear(waits)
+	stuff = {
+		xval=0,
+		xval2=0,
+		yval=-3,
+		yval2=0,
+		zval=2,
+
+		xAng=20,
+		yAng=180,
+		zAng=0,
+	}
+	for i,v in pairs(cons) do
+		v:Disconnect()
+	end
+	if dis then
+		for i,v in pairs(cons2) do
+			v:Disconnect()
+		end
+		task.spawn(function() plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots[newName]:Destroy() end)
+	end
+	if char and not char:FindFirstChild("Morph") then return end
+	for i,v in pairs(char:GetChildren()) do
+		if v.Name=="Morph" and v:GetAttribute("Custom")==newName then v:Destroy() end
+	end
+end
+
+local isSelected=false
+local checking=false
+
+local input
+local function disable()
+	input:Disconnect()
+	for i,v in pairs(GTabs) do _G[v][newName]={} end
+	for i,v in pairs(access) do
+		v:Destroy()
+	end
+	resetCons(true)
+	if checking and isSelected and char and char:FindFirstChild("Head") then
+		resetBody()
+		game.Players.LocalPlayer:WaitForChild("Backpack"):WaitForChild("ServerTraits"):WaitForChild("Choose"):FireServer(character)
+	end
+	workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+end
+
+local function addCFrame(att,x,y,z,x2,y2,z2)
+	att.CFrame = CFrame.new(x,y,z)*CFrame.Angles(math.rad(x2),math.rad(y2),math.rad(z2))
+end
+
+function setup(arg1)
+	if arg1:IsA("ImageButton") then
+		local udim2_upvr = UDim2.fromScale(0.06, 1)
+		local Size_upvr = arg1.Size
+		table.insert(cons2,arg1.MouseEnter:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = udim2_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.SelectionGained:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = udim2_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.MouseLeave:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = Size_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.SelectionLost:Connect(function()
+			game:GetService("TweenService"):Create(arg1, TweenInfo.new(0.2), {
+				Size = Size_upvr;
+			}):Play()
+		end))
+		table.insert(cons2,arg1.MouseButton1Click:Connect(function()
+			if selected then return end
+			currentSkin=data.favorite
+			checking=true
+			changed=true
+			selected=true
+			game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
+		end))
+		table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Play.MouseButton1Click:Connect(function()
+			if checking then isSelected=true selected=true game.Players.LocalPlayer.Backpack.ServerTraits.Choose:FireServer(character)
+			else isSelected=false checking=false selected=false char:SetAttribute(legalName,nil)
+			end
+		end))
+	end
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect:GetPropertyChangedSignal("Visible"):Connect(function()
+		if isSelected and checking then return end
+		if not isSelected and checking then
+			selected=false checking=false char:SetAttribute(legalName,nil)
+			resetCons()
+			resetBody()
+		elseif isSelected and not checking then
+			selected=true checking=true
+		end
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Left.MouseButton1Click:Connect(function()
+		if not selected then return end
+		currentSkin=skins[currentSkin-1] and currentSkin-1 or #skins
+		changed=true
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Right.MouseButton1Click:Connect(function()
+		if not selected then return end
+		currentSkin=skins[currentSkin+1] and currentSkin+1 or 1
+		changed=true
+	end))
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.InfoBox.Fav.MouseButton1Click:Connect(function()
+		if not selected then return end
+		data.favorite = currentSkin
+		writefile(legalName..".txt",game:GetService("HttpService"):JSONEncode(data))
+	end))
+	for i,v in pairs(plr.PlayerGui.HUD.CharacterSelect.Characters:GetDescendants()) do
+		if v.Parent.Name=="Slots" and v.Name~=newName and v:IsA("ImageButton") then
+			table.insert(cons2,v.MouseButton1Click:Connect(function()
+				if not checking then return end
+				for i,v in pairs(plr.Character:GetChildren()) do
+					if table.find(bodyParts,v.Name) and v:IsA("BasePart") then
+						v.Transparency = 0
+						v.Color = Color3.fromRGB(234, 184, 146)
+					end
+				end
+				selected=false char:SetAttribute(legalName,nil)
+				checking=false
+				plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = "Type 1"
+				resetCons()
+				if char:FindFirstChild("FakeHead") then
+					char.FakeHead.Transparency=0
+				end
+			end))
+		end
+	end
+	table.insert(cons2,plr.PlayerGui.HUD.CharacterSelect.Characters.DescendantAdded:Connect(function(thing)
+		if thing.Parent.Name=="Slots" and thing.Name~=newName and thing:IsA("ImageButton") then
+			table.insert(cons2,thing.MouseButton1Click:Connect(function()
+				if not checking then return end
+				for i,v in pairs(plr.Character:GetChildren()) do
+					if table.find(bodyParts,v.Name) and v:IsA("BasePart") then
+						v.Transparency = 0
+						v.Color = Color3.fromRGB(234, 184, 146)
+					end
+				end
+				selected=false char:SetAttribute(legalName,nil)
+				checking=false
+				plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = "Type 1"
+				resetCons()
+				if char:FindFirstChild("FakeHead") then
+					char.FakeHead.Transparency=0
+				end
+			end))
+		end
+	end))
+	char:WaitForChild("FakeHead")
+	table.insert(cons2,char.FakeHead:GetPropertyChangedSignal("Transparency"):Connect(function()
+		if not selected then return end
+		if char.FakeHead.Transparency~=1 then char.FakeHead.Transparency=1 end
+	end))
+end
+
+function checkButton(thing)
+	plr.PlayerGui:WaitForChild("HUD")
+	if plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then return end
+	task.wait()
+	for i,v in pairs(cons2) do v:Disconnect() end
+	table.insert(cons2,plr.PlayerGui.HUD.Destroying:Connect(function()
+		wait()
+		checkButton()
+	end))
+	createRoster()
+	local but = plr.PlayerGui.HUD.CharacterSelect.Characters.OnePiece.Slots:FindFirstChildOfClass("ImageButton"):Clone()
+	but.Name = newName
+	but.Parent = plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots
+	but.Image = icon
+	but.LayoutOrder = order or #plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:GetChildren()+1
+	but.ImageColor3 = Color3.fromRGB(255,255,255)
+	setup(but)
+end
+
+function updateMusic()
+	if workspace:FindFirstChild("Map") and workspace.Map:FindFirstChild("MapMusic") and workspace.Map.MapMusic.SoundId=="rbxassetid://1847026742" then
+		workspace.Map.MapMusic.SoundId="rbxasset://testStage.mp3"
+		workspace.Map.MapMusic:Play()
+	end
+end
+
+local slash
+
+function createFuncs()
+	print("Creating Funcs...")
+	plr.Character:WaitForChild("Humanoid")
+	plr.Character:WaitForChild("HumanoidRootPart")
+	humr=char.HumanoidRootPart
+	plr.PlayerGui:WaitForChild("HUD")
+
+	_G.PGUIFuncs.AFK = {}
+	_G.PGUIFuncs.AFK.MainFunc = function(thing)
+		if thing.Name=="afker" then
+			thing:WaitForChild("Frame"):WaitForChild("YES")
+			game.ReplicatedStorage.afk:FireServer(thing.Frame.YES.LocalScript)
+		end
+	end
+
+	_G.CHRFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if thing.Name=="Morph" then
+			game:GetService("RunService").RenderStepped:Wait()
+			if thing:FindFirstChild("Shisui") then
+				thing:SetAttribute("Ignore",true)
+			end
+			if not thing:GetAttribute("Custom") and not thing:GetAttribute("Ignore") then
+				thing:Destroy()
+			end
+		end
+	end
+	
+	_G.HRPFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if thing.Name=="Swing" and thing.SoundId~="rbxassetid://28166555" then
+			thing.Volume=0
+		elseif thing.Name=="Sound" and thing.SoundId=="rbxassetid://315030459" then
+			thing.Volume=0
+		end
+	end
+
+	_G.TSFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if not thing:IsA("Sound") then return end
+		if thing.Name=="Sound" and thing.SoundId=="rbxassetid://244264387" then
+			thing.Volume=0 return
+		end
+		wait()
+		if thing.Name=="Hilt" and not timePassed.pressed1 then
+			local slash = sound("rbxassetid://7171591581",3,char.Torso)
+			slash.PlaybackSpeed = .5
+			thing.SoundId="rbxassetid://3518146972"
+			thing:Play()
+		elseif thing.Name=="FastCut" then
+			thing.SoundId="rbxassetid://7118966167"
+			thing:Play()
+			thing.Volume=1.5
+		end
+	end
+
+	_G.THFuncs[newName].MainFunc = function(thing)
+		if not selected then return end
+		if thing.Name=="Cut" then task.wait()
+			if thing.Size==Vector3.new(19.5, 1.5600000619888306, 22.600000381469727) or not isBase and timePassed.pressed4 then
+				thing:Destroy()
+			elseif thing.Size==Vector3.new(39, 3.120000123977661, 45.20000076293945) and thing.Color==Color3.fromRGB(89, 12, 222) and (timePassed.pressed1mode or timePassed.pressed2mode) then
+				for i,v in pairs(thing:GetChildren()) do
+					v:Destroy()
+				end
+				local part = Instance.new("Part",thing)
+				part.Transparency = .2
+				part.CanCollide=false
+				local mesh = Instance.new("SpecialMesh",part)
+				mesh.MeshId = "rbxassetid://10090128061"
+				mesh.TextureId = "rbxassetid://10090094686"
+				--mesh.Scale = Vector3.new(2*(i/1.2),2*(i/1.2),2*(i/1.2))
+				mesh.Scale = Vector3.new(20,20,20)
+				mesh.VertexColor = Vector3.new(50, 2, 0)
+				local weld=Instance.new("Weld",part)
+				weld.Part0=thing
+				weld.Part1=part
+
+				game:GetService("TweenService"):Create(thing,TweenInfo.new(0),{Transparency=1}):Play()
+				waits[#waits+1]={Time=.15,function()
+					part.Transparency=1
+				end}	
+
+				for f = 1,2 do
+					local ptc = Instance.new("ParticleEmitter",part)
+					ptc.Name="ptc"..f
+					ptc.Brightness = 10
+					ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))})
+					ptc.LightEmission = f==1 and .25 or .35
+					ptc.LightInfluence = 0
+					ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,1.06*(15)),NumberSequenceKeypoint.new(1,0)})
+					ptc.Texture = f==1 and "rbxassetid://8502070064" or "rbxassetid://8502019872"
+					ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.262,.995),NumberSequenceKeypoint.new(.639,1),NumberSequenceKeypoint.new(1,1)})
+					ptc.ZOffset = 1 ptc.Acceleration = Vector3.new(0,-10,0)
+					ptc.EmissionDirection = Enum.NormalId.Bottom
+					ptc.Lifetime = NumberRange.new(.1,.1) ptc.Rate = 100
+					ptc.Rotation = NumberRange.new(-360,360) ptc.RotSpeed = NumberRange.new(-25,25)
+					ptc.Speed = NumberRange.new(-10, -10) ptc.SpreadAngle = Vector2.new(25,25)
+				end
+			end	
+		elseif thing.Name=="Part" then task.wait()
+			if thing:FindFirstChild("Attachment") and #thing:GetChildren()==6 then
+				thing:Destroy()
+			end
+		end
+		if thing.Name=="Cut" and thing:FindFirstChild("Sound") and thing.Sound.SoundId=="rbxassetid://614829601" and timePassed.pressed3 then
+			timePassed.pressed3=false
+			local part = Instance.new("Part",thing)
+			part.Transparency = .2
+			part.CanCollide=false
+			local mesh = Instance.new("SpecialMesh",part)
+			mesh.MeshId = "rbxassetid://10090128061"
+			mesh.TextureId = "rbxassetid://10090094686"
+			mesh.Scale = Vector3.new(12,20,9)
+			mesh.VertexColor = Vector3.new(50, 2, 0)
+
+			game:GetService("TweenService"):Create(part,TweenInfo.new(1),{Transparency=1}):Play()
+			waits[#waits+1]={Time=.75,function()
+				for i,v in pairs(part:GetChildren()) do
+					if v:IsA("Trail") or v:IsA("ParticleEmitter") then
+						v.Enabled=false
+					end
+				end
+			end}
+
+			local weld = Instance.new("Weld",part)
+			weld.Part0 = thing
+			weld.Part1 = part
+			weld.C1 = CFrame.new(-3,0,0)*CFrame.Angles(math.rad(90),math.rad(180),0)
+
+			for i = 1,2 do
+				local ptc = Instance.new("ParticleEmitter",part)
+				ptc.Name="ptc"..i
+				ptc.Brightness = 10
+				ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))})
+				ptc.LightEmission = i==1 and .25 or .35
+				ptc.LightInfluence = 0
+				ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,1.06),NumberSequenceKeypoint.new(1,0)})
+				ptc.Texture = i==1 and "rbxassetid://8502070064" or "rbxassetid://8502019872"
+				ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.262,0),NumberSequenceKeypoint.new(.639,0),NumberSequenceKeypoint.new(1,1)})
+				ptc.ZOffset = 1 ptc.Acceleration = Vector3.new(0,-10,0)
+				ptc.EmissionDirection = Enum.NormalId.Bottom
+				ptc.Lifetime = NumberRange.new(.5,.5) ptc.Rate = 100
+				ptc.Rotation = NumberRange.new(-360,360) ptc.RotSpeed = NumberRange.new(-25,25)
+				ptc.Speed = NumberRange.new(-5, -5) ptc.SpreadAngle = Vector2.new(25,25)
+			end
+
+			thing.Trail.Enabled=false
+			thing.Transparency = 1
+			thing.Sound.SoundId = "rbxassetid://1273118342"
+			slash=thing
+			swordFX(part)
+			part.Attachment.CFrame = CFrame.new(-10,0,11)
+			part.FLAMES.CFrame = CFrame.new(-10,0,-11)
+		elseif thing.Name=="Cut" and (thing.Color==Color3.fromRGB(144, 255, 246) and timePassed.pressed4 or thing.Color==Color3.fromRGB(89, 12, 222) and thing.Size==Vector3.new(17.55000114440918, 1.4040000438690186, 20.34000015258789) and timePassed.pressed4mode) then
+			thing:Destroy()
+		end
+	end
+	
+	_G.UPDFuncs[newName].MainFunc=function(elapsed)
+		char=plr.Character
+		if _G[newName]~=currentScript then disable() return end
+		if rosterFrame and rosterFrame.Parent and plr.PlayerGui:FindFirstChild("HUD") then
+			rosterFrame.Visible = plr.PlayerGui.HUD.CharacterSelect.Characters.SAO.Visible
+		end
+		if not selected then return end
+		if isSetting then 
+			char = plr.Character
+			if not char:FindFirstChild("HumanoidRootPart") then return end 
+			humr=char.HumanoidRootPart isSetting=false 
+		end
+
+		updateMusic()
+
+		for i,v in pairs(tweens) do
+			update(elapsed,v.obj,v.info,v.var,v.tweenFunc)
+		end
+		for i,v in pairs(funcs) do
+			v(elapsed)
+		end
+		for i,v in pairs(waits) do
+			if v.elapsed==nil then v.elapsed=0 end
+			v.elapsed+=elapsed
+			if v.elapsed>=v.Time then
+				if not tonumber(i) then waits[i]=nil else table.remove(waits,table.find(waits,v)) end
+				v[1]()
+			end
+		end
+
+		if customMode and isCutscene and plr.Character:FindFirstChild("HumanoidRootPart") then
+			if plr.PlayerGui:FindFirstChild("CameraScene") then
+				plr.PlayerGui.CameraScene.Disabled=true
+				plr.PlayerGui.CameraScene:Destroy()
+			end
+			workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+			workspace.CurrentCamera.CFrame = plr.Character.HumanoidRootPart.CFrame*CFrame.Angles(math.rad(stuff.xAng),math.rad(stuff.yAng),math.rad(stuff.zAng))*CFrame.new(stuff.xval+stuff.xval2,stuff.yval+stuff.yval2,stuff.zval)
+		end
+
+		char = plr.Character
+		if (not char:FindFirstChild("HumanoidRootPart") or humr~=char.HumanoidRootPart) and not isSetting then
+			char = plr.Character
+			isSetting=true
+			if not char:FindFirstChild("HumanoidRootPart") then return end
+			resetCons()
+			return
+		end
+		timeWithin-=elapsed
+		
+		if sword then
+			for i,v in pairs(sword:GetChildren()) do
+				if v:IsA("Trail") then v.Enabled=timeWithin>0 end
+			end
+		end
+		if shisui and shisui:FindFirstChild("Trail") then shisui.Transparency=1 shisui.Trail.Enabled=false end
+		if slash then slash.Transparency=1 end
+		
+		local prevBase = isBase
+		isBase=not char:FindFirstChild("State2")
+		if prevBase~=isBase then changed=true end
+		local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
+		if not plr.PlayerGui:FindFirstChild("HUD") then return end
+		if selected then
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Title1.Text=newName
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Desc.Text=info
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.NEXT.Text = skins[currentSkin].name or "Type "..currentSkin
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.C.Text = "S K I N S : "..totalSkins
+			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Fav.ImageColor3 = currentSkin==data.favorite and Color3.fromRGB(255, 183, 0) or Color3.fromRGB(116, 116, 116)
+			if changeMoves then 
+				for i = 1,4 do
+					plr.PlayerGui.HUD.CharacterSelect.InfoBox["Move"..i].Text=moves.base[i]
+					if plr.PlayerGui.HUD:FindFirstChild(""..i) then
+						plr.PlayerGui.HUD[""..i].TextLabel.Text=moves[isBase and "base" or "mode"][i]
+					end
+				end
+			end
+			if plr.Character:FindFirstChildOfClass("Shirt") and (char:FindFirstChildOfClass("Shirt").ShirtTemplate ~= skinTab.shirt or changed) then
+				createAvatar()
+			end
+		else
+			for i,v in pairs(access) do
+				v:Destroy()
+			end
+			return
+		end
+		for i,v in pairs(char.Humanoid:GetPlayingAnimationTracks()) do
+			if string.find(v.Animation.AnimationId,"180435571") or string.find(v.Animation.AnimationId,"180426354") or string.find(v.Animation.AnimationId,"180435792") or string.find(v.Animation.AnimationId,"125750702") or string.find(v.Animation.AnimationId,"180436148") or string.find(v.Animation.AnimationId,"1357408709") then continue end
+			--print(v.Animation.AnimationId)
+			if string.find(v.Animation.AnimationId,anims.modeAnim) and not isCutscene then
+				stuff = {
+					xval=0,
+					xval2=0,
+					yval=.3,
+					yval2=0,
+					zval=2.75,
+
+					xAng=10,
+					yAng=180,
+					zAng=0,
+				}
+				v:Stop()
+				isCutscene=true
+				task.spawn(function()
+					shisui:WaitForChild("BusoParticle2")
+					shisui:WaitForChild("x")
+					shisui.BusoParticle2:Destroy()
+					shisui.x.BusoParticle1:Destroy()
+				end)
+				local quote = Instance.new("Sound",char.Head)
+				quote.SoundId = "rbxasset://yoriichimode.mp3"
+				quote.Volume = 1
+				quote:Play()
+				quote.TimePosition=0
+				game:GetService("Debris"):AddItem(quote,5)
+				local anim = animate("rbxassetid://13843204007",.15,0)
+				createTween(stuff,{var="yval",goal=.95,duration=4},cubeOut)
+				createTween(stuff,{var="xAng",goal=20,duration=6},cubeOut)
+				createTween(stuff,{var="zval",goal=3.2,duration=6},cubeOut)
+				local thingy = createText("What do you take",5,game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame*CFrame.new(-1.3,1.5,0))
+				local thingy2
+				waits[#waits+1]={Time=1.8,function()
+					thingy2 = createText("life for exactly?",3,game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame*CFrame.new(-5.1,1.25,0))
+				end}
+				waits[#waits+1]={Time=2,function()
+					anim:AdjustSpeed(.5)
+					local snd = sound("rbxassetid://3518146972",.75,char.Torso)
+					snd.TimePosition=.3
+					local att = Instance.new("Attachment",char.HumanoidRootPart)
+					att.CFrame = CFrame.new(0,-1,0)
+					local ptc = Instance.new("ParticleEmitter",att)
+					ptc.Brightness = 10
+					ptc.Color = ColorSequence.new({
+						ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 42, 0))
+						,ColorSequenceKeypoint.new(1,Color3.fromRGB(255, 0, 0))})
+					ptc.LightEmission = 1 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityParallel
+					ptc.Size = NumberSequence.new({
+						NumberSequenceKeypoint.new(0,0)
+						,NumberSequenceKeypoint.new(.144,.252)
+						,NumberSequenceKeypoint.new(.361,4.47,.535)
+						,NumberSequenceKeypoint.new(.836,.126)
+						,NumberSequenceKeypoint.new(1,0)})
+					ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0.),NumberSequenceKeypoint.new(1,0)})
+					ptc.Texture = "rbxassetid://8133845150"
+					ptc.Transparency = NumberSequence.new({
+						NumberSequenceKeypoint.new(0,1)
+						,NumberSequenceKeypoint.new(.181,.15)
+						,NumberSequenceKeypoint.new(.322,0)
+						,NumberSequenceKeypoint.new(.652,.175)
+						,NumberSequenceKeypoint.new(.856,.863)
+						,NumberSequenceKeypoint.new(1,1)})
+					ptc.ZOffset = -1
+					ptc.EmissionDirection = Enum.NormalId.Top
+					ptc.Lifetime = NumberRange.new(.5,.5)
+					ptc.Rate = 0
+					ptc.Rotation = NumberRange.new(90,90)
+					ptc.RotSpeed = NumberRange.new(0,0)
+					ptc.Speed = NumberRange.new(5,20)
+					ptc.SpreadAngle = Vector2.new(90,-90)
+					ptc.Acceleration = Vector3.new(0,375,0)
+					ptc.Drag = 10
+					ptc.TimeScale = .5
+					ptc:Emit(5) 
+
+					local att = Instance.new("Attachment",char.HumanoidRootPart)
+					att.CFrame = CFrame.new(0,-3,0)
+					local ptc = Instance.new("ParticleEmitter",att)
+					ptc.Brightness = 10
+					ptc.Color = ColorSequence.new({
+						ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 106, 0))
+						,ColorSequenceKeypoint.new(1,Color3.fromRGB(255, 0, 0))})
+					ptc.LightEmission = 1 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityParallel
+					ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.65),NumberSequenceKeypoint.new(1,.65)})
+					ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+					ptc.Texture = "rbxassetid://8133845150"
+					ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.119,.0938),NumberSequenceKeypoint.new(.471,.244),NumberSequenceKeypoint.new(1,1)})
+					ptc.ZOffset = .95
+					ptc.EmissionDirection = Enum.NormalId.Top
+					ptc.Lifetime = NumberRange.new(.4,.45)
+					ptc.Rate = 0
+					ptc.Rotation = NumberRange.new(90,90)
+					ptc.RotSpeed = NumberRange.new(0,0)
+					ptc.Speed = NumberRange.new(20,50)
+					ptc.SpreadAngle = Vector2.new(180,-180)
+					ptc.Acceleration = Vector3.new(0,475,0)
+					ptc.Drag = 10
+					ptc.TimeScale = .5
+					ptc:Emit(20)
+				end}
+				waits[#waits+1]={Time=2.3,function()
+					createTween(stuff,{var="zval",goal=4,duration=.5},cubeOut)
+					createTween(stuff,{var="yval",goal=.5,duration=4},cubeInOut)
+					local num = .001
+					local mult = .01
+					for i = 1,10 do
+						anim:AdjustSpeed(.5-(num*i))
+						num+=mult
+						mult*=i/3.45
+						task.wait()	
+					end
+				end}
+				waits[#waits+1]={Time=2.8,function()
+					createTween(stuff,{var="zval",goal=3.6,duration=2.5},cubeInOut)
+					anim:AdjustSpeed(0)
+				end}
+				waits[#waits+1]={Time=4,function()
+					isCutscene=false
+					anim:Stop(.5)
+					if thingy then thingy:Destroy() end
+					if thingy2 then thingy2:Destroy() end
+				end}
+				local theme
+				waits[#waits+1]={Time=2.55,function()
+					theme = Instance.new("Sound",char.Torso)
+					theme.SoundId = "rbxasset://yoriichitheme.mp3"
+					theme.Volume = .5
+					theme:Play()
+					game:GetService("Debris"):AddItem(theme,66)
+				end}
+				waits[#waits+1]={Time=60,function()
+					game:GetService("TweenService"):Create(theme,TweenInfo.new(5),{Volume=0}):Play()
+				end}
+			elseif string.find(v.Animation.AnimationId,anims.Light1.old) then
+				v:Stop(0) animate(anims.Light1.new,v.Speed) timeWithin=.7
+			elseif string.find(v.Animation.AnimationId,anims.Light2.old) then
+				v:Stop(0) animate(anims.Light2.new,v.Speed) timeWithin=.7
+			elseif string.find(v.Animation.AnimationId,anims.Light3.old) then
+				v:Stop(0) animate(anims.Light3.new,v.Speed) timeWithin=.7
+			elseif string.find(v.Animation.AnimationId,anims.Light4.old) then
+				v:Stop(0) animate(anims.Light4.new,v.Speed) timeWithin=.7
+			elseif string.find(v.Animation.AnimationId,anims.Uptilt) or string.find(v.Animation.AnimationId,anims.Downslam) or string.find(v.Animation.AnimationId,anims.Upfling) or string.find(v.Animation.AnimationId,anims.Dropkick) or string.find(v.Animation.AnimationId,anims.Downtilt)  then
+				v.Priority = Enum.AnimationPriority.Action2
+			elseif string.find(v.Animation.AnimationId,anims.LightFinish.old) then
+				if v.Speed~=0 then
+					timeWithin=.7
+					v:Stop(0) animate(anims.LightFinish.new,v.Speed)
+				else
+					timePassed.pressed4 = true
+					waits["pressed4"]={Time=2,function()
+						timePassed.pressed4=false
+					end}
+					timeWithin=1.2
+					v:Stop(0) local anim = animate(anims.move4.new,1)
+					anim:AdjustSpeed(0)
+					sound("rbxassetid://858508159",3,char.Torso)
+					waits[#waits+1]={Time=.3,function()
+						sound("rbxassetid://3518167306",2,char.Torso)
+					end}
+					waits[#waits+1]={Time=.5,function()
+						anim:AdjustSpeed(1.7)
+						local lastNum = 15
+						local Time = 0
+						local curLoc = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+						for i = 1,lastNum do
+							waits[#waits+1]={Time=Time*i,function()
+								local firstPart
+								local num = math.random(1,2)
+								for e = 1,2 do
+									local part = Instance.new("Part",workspace.Effects)
+									part.Transparency = .2
+									part.Anchored = e==1
+									part.CanCollide=false
+									if e==1 then
+										part.CFrame = curLoc * CFrame.new(0,0,-2*(i*3.5)+(not isBase and 20 or 0)) * CFrame.Angles(0,math.rad(90),math.rad(i==1 and 90 or -90))
+									end
+									firstPart=e==1 and part or firstPart
+									local mesh = Instance.new("SpecialMesh",part)
+									mesh.MeshId = "rbxassetid://10090128061"
+									mesh.TextureId = "rbxassetid://10090094686"
+									--mesh.Scale = Vector3.new(2*(i/1.2),2*(i/1.2),2*(i/1.2))
+									mesh.Scale = isBase and Vector3.new(8+(1*i),8+(1*i),8+(1*i))
+										or Vector3.new(20,20,20)
+									mesh.VertexColor = Vector3.new(50, 2, 0)
+
+									if e==1 then
+										for f = 2,2 do
+											local ptc = Instance.new("ParticleEmitter",part)
+											ptc.Name="ptc"..f
+											ptc.Brightness = 10
+											ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,255,255)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,255,255))})
+											ptc.LightEmission = f==1 and .25 or .35
+											ptc.LightInfluence = 0
+											ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,1.06*(i*6)),NumberSequenceKeypoint.new(1,0)})
+											ptc.Texture = f==1 and "rbxassetid://8502070064" or "rbxassetid://8502019872"
+											ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.262,.995),NumberSequenceKeypoint.new(.639,1),NumberSequenceKeypoint.new(1,1)})
+											ptc.ZOffset = 1 ptc.Acceleration = Vector3.new(0,-10,0)
+											ptc.EmissionDirection = Enum.NormalId.Bottom
+											ptc.Lifetime = NumberRange.new(.5,.5) ptc.Rate = 100
+											ptc.Rotation = NumberRange.new(-360,360) ptc.RotSpeed = NumberRange.new(-25,25)
+											ptc.Speed = NumberRange.new(-5, -5) ptc.SpreadAngle = Vector2.new(25,25)
+										end
+									end
+									game:GetService("TweenService"):Create(part,TweenInfo.new(.5),{Transparency=1}):Play()
+									if e==1 then
+										game:GetService("TweenService"):Create(part,TweenInfo.new(.2),{CFrame=part.CFrame*CFrame.Angles(0,math.rad(num==1 and 180 or -180),0)}):Play()
+										task.spawn(function()
+											waits[#waits+1]={Time=.2,function()
+												game:GetService("TweenService"):Create(part,TweenInfo.new(.2),{CFrame=part.CFrame*CFrame.Angles(0,math.rad(num==1 and 180 or -180),0)}):Play()
+											end}	
+										end)
+									end
+									if e~=1 then
+										local weld = Instance.new("Weld",part)
+										weld.Part0 = firstPart
+										weld.Part1 = part
+										weld.C1 = CFrame.new(0,0,0)*CFrame.Angles(math.rad(0),math.rad(180),0)
+									end
+									game:GetService("Debris"):AddItem(part,.5)
+								end
+							end}
+							Time=.03
+						end
+					end}
+				end
+			elseif string.find(v.Animation.AnimationId,anims.move1.old) then
+				timePassed.pressed1=true
+				timeWithin=1.5
+				v:Stop(0) animate(anims.move1.new,2)
+				local drag = sound("rbxassetid://511715134",2,char.Torso)
+				sound("rbxassetid://9125616715",3,char.Torso)
+				waits[#waits+1]={Time=.5,function()
+					sound("rbxassetid://142472270",1,char.Torso)
+				end}
+				waits[#waits+1]={Time=1,function()
+					timePassed.pressed1=false
+					sound("rbxassetid://7128851174",2,char.Torso)
+				end}
+				--game:GetService("TweenService"):Create(drag,TweenInfo.new(3),{Volume=0}):Play()
+
+				local part = Instance.new("Part",workspace.Effects)
+				part.Anchored=true
+				part.CanCollide=false
+				part.Transparency=1
+				part.CFrame = char.HumanoidRootPart.CFrame*CFrame.new(-1.2,-3,0)
+				game:GetService("Debris"):AddItem(part,2)
+				local ptc = Instance.new("ParticleEmitter",part)
+				ptc.Brightness = 15
+				ptc.Color =	ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,200,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+				ptc.LightEmission = -2 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityParallel
+				ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,1.48,0),NumberSequenceKeypoint.new(.244,1.58,.25),NumberSequenceKeypoint.new(.543,.984,.165),NumberSequenceKeypoint.new(1,0,0)})
+				ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,-.25),NumberSequenceKeypoint.new(1,.5,.25)})
+				ptc.Texture = "rbxassetid://7451697448"
+				ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.261,0),NumberSequenceKeypoint.new(1,1)})
+				ptc.ZOffset = 0 ptc.EmissionDirection = Enum.NormalId.Right ptc.Enabled=false
+				ptc.Lifetime = NumberRange.new(.5,.5) ptc.Rate=100
+				ptc.Rotation = NumberRange.new(-90,-90) 
+				ptc.RotSpeed = NumberRange.new(0,0)
+				ptc.Speed = NumberRange.new(25,25)
+				ptc.SpreadAngle = Vector2.new(0,180)
+				ptc.Acceleration = Vector3.new(0,50,0)
+				ptc.Drag = 3 ptc.LockedToPart = true
+				ptc:Emit(30)
+
+				local drag = Instance.new("Part",workspace)
+				drag.Color = Color3.fromRGB(255, 157, 0)
+				drag.Material = Enum.Material.Neon
+				drag.Transparency = 1
+				drag.Size = Vector3.new(4,1,2)
+				drag.Name = "DRAGONNN"
+				drag.CanCollide=false
+				drag.Massless=true
+				swordFX(drag)
+				game:GetService("Debris"):AddItem(drag,3)
+				local mesh = Instance.new("SpecialMesh",drag)
+				mesh.MeshId = "rbxassetid://6980699164"
+				mesh.Scale = Vector3.new(.1,.1,.1)
+				local weld = Instance.new("Weld",drag)
+				weld.Part0 = char.HumanoidRootPart
+				weld.Part1 = drag
+
+				game:GetService("TweenService"):Create(drag,TweenInfo.new(.5),{Transparency=.4}):Play()
+
+				local thing = {
+					x=2,
+					y=-5,
+					z=2,
+					xang=150,
+					yang=230,
+					zang=70,
+				}
+				weld.C1 = CFrame.new(thing.x,thing.y,thing.z)*CFrame.Angles(math.rad(thing.xang),math.rad(thing.yang),math.rad(thing.zang))
+
+				local num = math.random(1,10000)
+				funcs["dragon"..num] = function()
+					weld.C1 = CFrame.new(thing.x,thing.y,thing.z)*CFrame.Angles(math.rad(thing.xang),math.rad(thing.yang),math.rad(thing.zang))
+				end
+
+				createTween(thing,{var="x",goal=-15,duration=3},cubeIn)
+				createTween(thing,{var="y",goal=0,duration=1},cubeInOut)
+				createTween(thing,{var="z",goal=-5,duration=1},cubeInOut)
+				createTween(thing,{var="zang",goal=120,duration=1},cubeInOut)
+				createTween(thing,{var="yang",goal=270,duration=1},cubeInOut)
+				createTween(thing,{var="xang",goal=180,duration=1},cubeInOut)
+
+				waits[#waits+1]={Time=.85,function()
+					createTween(thing,{var="x",goal=-20,duration=.8},cubeInOut)
+					createTween(thing,{var="z",goal=5,duration=.8},cubeInOut)
+					createTween(thing,{var="yang",goal=300,duration=.8},cubeInOut)
+					game:GetService("TweenService"):Create(drag,TweenInfo.new(1),{Transparency=1}):Play()
+					--game:GetService("TweenService"):Create(weld,TweenInfo.new(2),{C1=CFrame.new(-2,-2,-2)*CFrame.Angles(math.rad(180),math.rad(270),math.rad(60))}):Play()
+				end}
+				waits[#waits+1]={Time=1.6,function()
+					for i,v in pairs(drag:GetDescendants()) do if v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Enabled=false end end
+				end}
+				waits[#waits+1]={Time=2.6,function()
+					--game:GetService("TweenService"):Create(weld,TweenInfo.new(2),{C1=CFrame.new(-2,-2,4)*CFrame.Angles(math.rad(180),math.rad(300),math.rad(60))}):Play()
+				end}
+
+				waits[#waits+1]={Time=3,function()
+					funcs["dragon"..num]=nil
+				end}
+
+				for e = 1,2 do
+					local part = Instance.new("Part",drag)
+					part.Transparency=1
+					part.Size = Vector3.new(1, 1, 1)
+					part.CanCollide=false
+					part.Massless=true
+					local weld = Instance.new("Weld",part)
+					weld.Part0 = part
+					weld.Part1 = drag
+					weld.C0 = CFrame.new(0,0,0)*CFrame.Angles(math.rad(e==1 and 34.492 or 44.458),math.rad(180),0)
+					weld.C1 = CFrame.new(e==1 and 0 or -.883,e==1 and 0 or -1.324,e==1 and 0 or .443)*CFrame.Angles(math.rad(0),math.rad(-90),math.rad(-90))
+					for i = 1,3 do
+						local ptc = Instance.new("ParticleEmitter",part)
+						ptc.Name=i==1 and "FIRE" or i==2 and "GLOW" or "SPECKS"
+						ptc.Brightness = i~=2 and 2 or 1
+						ptc.Color = i==1 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,53,3)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,98))})
+							or i==2 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 116, 16)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255, 116, 16))})
+							or ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,53,3)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,98))})
+						ptc.LightEmission = 1 ptc.LightInfluence = 0
+						ptc.Size = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,2,1),NumberSequenceKeypoint.new(1,0,0)})
+							or i==2 and NumberSequence.new({NumberSequenceKeypoint.new(0,5,1),NumberSequenceKeypoint.new(1,1,1)})
+							or i==3 and NumberSequence.new({NumberSequenceKeypoint.new(0,.125,.025),NumberSequenceKeypoint.new(1,0,0)})
+						ptc.Texture = i==1 and "http://www.roblox.com/asset/?id=11534281007" or "rbxassetid://4509687978"
+						ptc.Transparency = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,.5),NumberSequenceKeypoint.new(1,1)})
+							or i==2 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,.95),NumberSequenceKeypoint.new(1,1)})
+							or i==3 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.2),NumberSequenceKeypoint.new(1,1)})
+						ptc.ZOffset = i==2 and -1 or 0 ptc.EmissionDirection = Enum.NormalId.Top
+						ptc.Lifetime = i==3 and NumberRange.new(.375,.625) or NumberRange.new(.5,1) ptc.Rate=i~=2 and 100 or 50
+						ptc.Rotation = NumberRange.new(-360,360) 
+						ptc.RotSpeed = i==1 and NumberRange.new(-15,15) or i==2 and NumberRange.new(0,0) or NumberRange.new(-45,45)
+						ptc.Speed = i~=3 and NumberRange.new(1.25,2.5) or NumberRange.new(10,10)
+						ptc.SpreadAngle = i==1 and Vector2.new(5,5) or i==2 and Vector2.new(0,0) or Vector2.new(45,45)
+						ptc.Acceleration = i==1 and Vector3.new(0,8,0) or i==2 and Vector3.new(0,5,0) or Vector3.new(0,-15,0)
+						if i==1 then
+							ptc.LockedToPart=true
+							ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+							ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+						end
+					end
+				end
+				for i = 1,4 do
+					local ptc = Instance.new("ParticleEmitter",drag)
+					ptc.Name=i==1 and "FLAMEPILLAR" or i==2 and "Fire" or i==3 and "GLOW" or "SPECKS"
+					ptc.Brightness = (i==1 or i==4) and 2 or i==2 and 20 or 1
+					ptc.Color = i==1 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,183,0)),ColorSequenceKeypoint.new(.517,Color3.fromRGB(255,0,111)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,76))})
+						or i==2 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,140,0)),ColorSequenceKeypoint.new(.322,Color3.fromRGB(255,139,1)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,234))})
+						or i==3 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 116, 16)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255, 116, 16))})
+						or ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 0, 0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255, 0, 123))})
+					ptc.LightEmission = i~=2 and 1 or -2 ptc.LightInfluence = 0 ptc.Orientation = i==1 and Enum.ParticleOrientation.VelocityParallel or Enum.ParticleOrientation.FacingCamera
+					ptc.Size = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,4,1),NumberSequenceKeypoint.new(1,0,0)})
+						or i==2 and NumberSequence.new({NumberSequenceKeypoint.new(0,2),NumberSequenceKeypoint.new(1,2)})
+						or i==3 and NumberSequence.new({NumberSequenceKeypoint.new(0,8,1),NumberSequenceKeypoint.new(1,3,1)})
+						or NumberSequence.new({NumberSequenceKeypoint.new(0,.25,.025),NumberSequenceKeypoint.new(1,0,0)})
+					ptc.Squash = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,1,0),NumberSequenceKeypoint.new(.75,2,1),NumberSequenceKeypoint.new(1,1,0)})
+						or (i==2 or i==3) and NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+						or NumberSequence.new({NumberSequenceKeypoint.new(0,0,1),NumberSequenceKeypoint.new(1,0,1)})
+					ptc.Texture = i~=2 and "rbxassetid://4509687978" or "rbxassetid://12867598824"
+					ptc.Transparency = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,.5),NumberSequenceKeypoint.new(1,1)})
+						or i==2 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.126,.425),NumberSequenceKeypoint.new(.866,.425),NumberSequenceKeypoint.new(1,1)})
+						or i==3 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,.95),NumberSequenceKeypoint.new(1,1)})
+						or NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.2),NumberSequenceKeypoint.new(1,1)})
+					ptc.ZOffset = (i==1 or i==4) and 0 or -1 ptc.EmissionDirection = (i==1 or i==2) and Enum.NormalId.Left or Enum.NormalId.Top
+					ptc.Lifetime = (i==1 or i==3) and NumberRange.new(.5,1) or i==2 and NumberRange.new(.2,.4) or NumberRange.new(.375,.625) ptc.Rate=i~=3 and 100 or 50
+					ptc.Rotation = i==1 and NumberRange.new(90,90) or i==2 and NumberRange.new(0,360) or NumberRange.new(-360,360)
+					ptc.RotSpeed = i==1 and NumberRange.new(0,0) or i==2 and NumberRange.new(0,0) or i==3 and NumberRange.new(0,360) or NumberRange.new(-45,45)
+					ptc.Speed = i==1 and NumberRange.new(15,30) or i==2 and NumberRange.new(50,50) or i==3 and NumberRange.new(10,25) or NumberRange.new(10,10)
+					ptc.SpreadAngle = i==1 and Vector2.new(-3,3) or (i==2 or i==3) and Vector2.new(0,0) or Vector2.new(45,45)
+					ptc.Acceleration = i==1 and Vector3.new(0,8,0) or i==2 and Vector3.new(0,0,0) or i==3 and Vector3.new(0,5,0) or Vector3.new(0,-25,0)
+					ptc.Drag = i~=4 and 0 or 5
+					if i==2 then
+						ptc.LockedToPart=true
+						ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+						ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+					elseif i==4 then
+						ptc.ShapeInOut = Enum.ParticleEmitterShapeInOut.InAndOut
+					end
+				end
+				local att = Instance.new("Attachment",drag)
+				att.CFrame = CFrame.new(3.544,0,0)*CFrame.Angles(0,0,math.rad(90))
+				local ptc = Instance.new("ParticleEmitter",att)
+				ptc.Brightness = 15
+				ptc.Color =	ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,149,0)),ColorSequenceKeypoint.new(.32,Color3.fromRGB(255,144,4)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,115))})
+				ptc.LightEmission = -.5 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityParallel
+				ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,0,0),NumberSequenceKeypoint.new(.212,.543,.109),NumberSequenceKeypoint.new(.331,2.01,.33),NumberSequenceKeypoint.new(.424,2.75,.43),NumberSequenceKeypoint.new(.631,2.87,.65),NumberSequenceKeypoint.new(1,2.75,.71)})
+				ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,.554,.261)})
+				ptc.Texture = "rbxassetid://7545397747"
+				ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,1)})
+				ptc.ZOffset = 0 ptc.EmissionDirection = Enum.NormalId.Back
+				ptc.Lifetime = NumberRange.new(2,2) ptc.Rate=10
+				ptc.Rotation = NumberRange.new(-110,-110) 
+				ptc.RotSpeed = NumberRange.new(20,20)
+				ptc.Speed = NumberRange.new(30,50)
+				ptc.SpreadAngle = Vector2.new(0,360)
+				ptc.Acceleration = Vector3.new(0,150,0)
+				ptc.Drag = 30 ptc.LockedToPart = true
+			elseif string.find(v.Animation.AnimationId,anims.move1mode.old) then
+				timeWithin = 1
+				timePassed.pressed1mode=true
+				v:Stop(0) local anim = animate(anims.move1mode.new,0)
+				waits[#waits+1]={Time=.55,function()
+					anim:AdjustSpeed(1.7)
+				end}
+				waits[#waits+1]={Time=1.6,function()
+					timePassed.pressed1mode=false
+				end}
+			elseif string.find(v.Animation.AnimationId,anims.move2.old) then
+				timeWithin=1
+				v:Stop(0) local anim = animate(anims.move2.new,.25)
+				local son = sound("rbxassetid://5272402910",2,char.Torso)
+				son.TimePosition = .2
+				waits[#waits+1]={Time=.7,function()
+					anim:AdjustSpeed(2)
+					local part = Instance.new("Part",workspace.Effects)
+					part.Size = Vector3.new(1, 1, 1)
+					part.CFrame = char.HumanoidRootPart.CFrame*CFrame.new(0,-3,-6)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(0))
+					part.Anchored=true
+					part.CanCollide=false
+					part.Transparency=1
+					sound("rbxassetid://7128851174",1.5,char.Torso)--explosion
+					sound("rbxassetid://8388601745",1,char.Torso)--burning
+					for i = 1,2 do
+						local ptc = Instance.new("ParticleEmitter",part)
+						ptc.Brightness = i==1 and 2 or 15
+						ptc.Color = i==1 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,132,75)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+							or ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 191, 0)),ColorSequenceKeypoint.new(.8,Color3.fromRGB(255,12,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+						ptc.LightEmission = i==1 and 1 or -1 ptc.LightInfluence = 0 ptc.Orientation = i==1 and Enum.ParticleOrientation.FacingCamera or Enum.ParticleOrientation.VelocityParallel
+						ptc.Size = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,.25,.025),NumberSequenceKeypoint.new(1,0)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,.492),NumberSequenceKeypoint.new(.25,1.37,.25),NumberSequenceKeypoint.new(.643,3.17,.165),NumberSequenceKeypoint.new(1,.874)})
+						ptc.Squash = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,0,1),NumberSequenceKeypoint.new(1,0,1)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,-.25,0),NumberSequenceKeypoint.new(1,.5,.25)})
+						ptc.Texture = i==1 and "rbxassetid://4509687978" or "http://www.roblox.com/asset/?id=11534281007"
+						ptc.Transparency = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.2),NumberSequenceKeypoint.new(1,1)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,0),NumberSequenceKeypoint.new(1,1)})
+						ptc.ZOffset = 1 ptc.EmissionDirection = i==1 and Enum.NormalId.Top or Enum.NormalId.Right
+						ptc.Lifetime = NumberRange.new(i==1 and .375 or .5,i==1 and .625 or .7) ptc.Rate=0
+						ptc.Rotation = NumberRange.new(i==1 and -360 or -90,i==1 and 360 or -90) 
+						ptc.RotSpeed = NumberRange.new(i==1 and -45 or 0,i==1 and 45 or 0)
+						ptc.Speed = NumberRange.new(i==1 and 25 or 50,i==1 and 50 or 50)
+						ptc.SpreadAngle = Vector2.new(i==1 and 45 or 0,i==1 and 45 or 180)
+						ptc.Acceleration = Vector3.new(0,i==1 and -25 or 45,0)
+						ptc.Drag = i==1 and 5 or 3
+						if i==2 then
+							ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+							ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+						end
+						ptc:Emit(i==1 and 50 or 200)
+					end
+					game:GetService("Debris"):AddItem(part,1)
+				end}
+			elseif string.find(v.Animation.AnimationId,anims.move2mode.old) and not timePassed.pressed2mode then
+				timePassed.pressed2mode=true
+
+				local att = Instance.new("Attachment",char.HumanoidRootPart)
+				att.CFrame = CFrame.new(0,-1,0)
+				local ptc = Instance.new("ParticleEmitter",att)
+				ptc.Brightness = 10
+				ptc.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0))
+					,ColorSequenceKeypoint.new(.125,Color3.fromRGB(255,115,4))
+					,ColorSequenceKeypoint.new(.239,Color3.fromRGB(255,234,0))
+					,ColorSequenceKeypoint.new(.356,Color3.fromRGB(60,255,0))
+					,ColorSequenceKeypoint.new(.488,Color3.fromRGB(0,242,255))
+					,ColorSequenceKeypoint.new(.633,Color3.fromRGB(0,26,255))
+					,ColorSequenceKeypoint.new(.765,Color3.fromRGB(247,1,242))
+					,ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,242))})
+				ptc.LightEmission = 1 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityParallel
+				ptc.Size = NumberSequence.new({
+					NumberSequenceKeypoint.new(0,0)
+					,NumberSequenceKeypoint.new(.144,.252)
+					,NumberSequenceKeypoint.new(.361,4.47,.535)
+					,NumberSequenceKeypoint.new(.836,.126)
+					,NumberSequenceKeypoint.new(1,0)})
+				ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0.),NumberSequenceKeypoint.new(1,0)})
+				ptc.Texture = "rbxassetid://8133845150"
+				ptc.Transparency = NumberSequence.new({
+					NumberSequenceKeypoint.new(0,1)
+					,NumberSequenceKeypoint.new(.181,.15)
+					,NumberSequenceKeypoint.new(.322,0)
+					,NumberSequenceKeypoint.new(.652,.175)
+					,NumberSequenceKeypoint.new(.856,.863)
+					,NumberSequenceKeypoint.new(1,1)})
+				ptc.ZOffset = .95
+				ptc.EmissionDirection = Enum.NormalId.Top
+				ptc.Lifetime = NumberRange.new(.3,.3)
+				ptc.Rate = 0
+				ptc.Rotation = NumberRange.new(90,90)
+				ptc.RotSpeed = NumberRange.new(0,0)
+				ptc.Speed = NumberRange.new(5,20)
+				ptc.SpreadAngle = Vector2.new(90,-90)
+				ptc.Acceleration = Vector3.new(0,375,0)
+				ptc.Drag = 10
+				ptc.TimeScale = .5
+				ptc:Emit(5) 
+
+				local att = Instance.new("Attachment",char.HumanoidRootPart)
+				att.CFrame = CFrame.new(0,-3,0)
+				local ptc = Instance.new("ParticleEmitter",att)
+				ptc.Brightness = 10
+				ptc.Color = ColorSequence.new({
+					ColorSequenceKeypoint.new(0,Color3.fromRGB(255,0,0))
+					,ColorSequenceKeypoint.new(.0952,Color3.fromRGB(255,140,0))
+					,ColorSequenceKeypoint.new(.202,Color3.fromRGB(0,255,21))
+					,ColorSequenceKeypoint.new(.358,Color3.fromRGB(0,255,238))
+					,ColorSequenceKeypoint.new(.519,Color3.fromRGB(0,55,255))
+					,ColorSequenceKeypoint.new(.683,Color3.fromRGB(237,2,255))
+					,ColorSequenceKeypoint.new(1,Color3.fromRGB(247,0,255))})
+				ptc.LightEmission = 1 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityParallel
+				ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,.65),NumberSequenceKeypoint.new(1,.65)})
+				ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+				ptc.Texture = "rbxassetid://8133845150"
+				ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.119,.0938),NumberSequenceKeypoint.new(.471,.244),NumberSequenceKeypoint.new(1,1)})
+				ptc.ZOffset = .95
+				ptc.EmissionDirection = Enum.NormalId.Top
+				ptc.Lifetime = NumberRange.new(.2,.25)
+				ptc.Rate = 0
+				ptc.Rotation = NumberRange.new(90,90)
+				ptc.RotSpeed = NumberRange.new(0,0)
+				ptc.Speed = NumberRange.new(20,50)
+				ptc.SpreadAngle = Vector2.new(180,-180)
+				ptc.Acceleration = Vector3.new(0,475,0)
+				ptc.Drag = 10
+				ptc.TimeScale = .5
+				ptc:Emit(20)
+
+				local tab = {}
+				for i,v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+					if v:IsA("BasePart") and v.Transparency==0 then
+						table.insert(tab,v)
+						local part=v:Clone()
+						v.Transparency=1
+						for _,g in pairs(part:GetDescendants()) do
+							if g:IsA("Weld") or g:IsA("ManualWeld") or g:IsA("Attachment") or g:IsA("Trail") or g:IsA("ParticleEmitter") or g:IsA("WeldConstraint") or g:IsA("Motor6D") then g:Destroy() end
+							if g:isA("SpecialMesh") then g.TextureId="" end
+						end
+						part.Anchored=true
+						part.Parent=workspace.Effects
+						part.CanCollide=false
+						part.BottomSurface = Enum.SurfaceType.Smooth
+						part.TopSurface = Enum.SurfaceType.Smooth
+						part.LeftSurface = Enum.SurfaceType.Smooth
+						part.RightSurface = Enum.SurfaceType.Smooth
+						part.Transparency = .2
+						game:GetService("TweenService"):Create(part,TweenInfo.new(1.5),{Transparency=1}):Play()
+						local x = 0
+						task.spawn(function()
+							for i = 1,300 do
+								task.wait()
+								part.Color = Color3.fromHSV(x,1,1)
+								x = x + 1/255
+								if x >=1 then
+									x=0
+								end
+							end
+							part:Destroy()
+						end)
+					elseif v:IsA("ParticleEmitter") and v.Enabled then
+						table.insert(tab,v)
+						v.Enabled=false
+					end
+				end
+
+				local snd = sound("rbxassetid://858508159",2,char.Torso)
+				snd.TimePosition=.3
+
+				waits[#waits+1]={Time=.5,function()
+					sound("rbxassetid://7128851174",2,char.Torso)
+				end}
+				waits[#waits+1]={Time=.65,function()
+					for i,v in pairs(tab) do
+						if v:IsA("BasePart") then
+							v.Transparency=0
+						else
+							v.Enabled=true
+						end
+					end
+					table.clear(tab) tab=nil
+				end}
+				waits[#waits+1]={Time=.05,function()
+					sound("rbxassetid://3518167306",1,char.Torso)
+				end}
+				waits[#waits+1]={Time=1.35,function()
+					timePassed.pressed2mode=false
+				end}
+			elseif string.find(v.Animation.AnimationId,anims.move3.old) then
+				timePassed.pressed3=true
+				timeWithin=1
+				v:Stop(0) animate(anims.move3.new,1)
+			elseif string.find(v.Animation.AnimationId,anims.move4mode.old) then
+				timeWithin=1
+				timePassed.pressed4mode=true
+				v:Stop(0) local anim = animate(anims.move4mode.new,2)
+				sound("rbxassetid://5989940988",2,char.Torso)
+				waits[#waits+1]={Time=.3,function()
+					anim:AdjustSpeed(0)
+				end}
+				waits[#waits+1]={Time=.15,function()
+					local slash = Instance.new("Part",workspace.Effects)
+					slash.Transparency=1
+					slash.Size = Vector3.new(16.931, 5.298, 18.489)
+					slash.CFrame = char.HumanoidRootPart.CFrame*CFrame.new(-2,0,-3)*CFrame.Angles(math.rad(0),math.rad(60),math.rad(0))
+					slash.Anchored=true
+					slash.CanCollide=false
+					game:GetService("TweenService"):Create(slash,TweenInfo.new(.2),{Transparency=1,["CFrame"]=char.HumanoidRootPart.CFrame*CFrame.new(0,0,-3)*CFrame.Angles(math.rad(-30),math.rad(-100),math.rad(-50))}):Play()
+					local mesh = Instance.new("SpecialMesh",slash)
+					mesh.MeshId = "rbxassetid://10090128061"
+					mesh.TextureId = "rbxassetid://10090094686"
+					mesh.Scale = Vector3.new(8.465, 15.094, 9.244)
+					mesh.VertexColor = Vector3.new(5,.9,0)
+
+					for i = 1,8 do
+						local att = Instance.new("Attachment",slash)
+						local tab = (i==1 or i==5) and {-0.044, -0.078, 10.34,  0, -36.574, 90}
+							or (i==2 or i==6) and {-6.473, -0.078, 5.825,  0, -80, 90}
+							or (i==3 or i==7) and {-8.414, -0.078, -1.295,  0, -130, 90}
+							or (i==4 or i==8) and {-4.531, -0.078, -7.767,  0, -170, 90}
+						addCFrame(att,table.unpack(tab))
+
+						local ptc = Instance.new("ParticleEmitter",att)
+						ptc.Brightness = i<=4 and 2 or 4
+						ptc.Color = i<=4 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,53,3)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,53,3))})
+							or ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(55,132,255)),ColorSequenceKeypoint.new(1,Color3.fromRGB(55,132,255))})
+						ptc.LightEmission = i<=4 and 0 or 1 ptc.LightInfluence = 0
+						ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,5,1),NumberSequenceKeypoint.new(1,0,0)})
+						ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+						ptc.Texture = "http://www.roblox.com/asset/?id=11534281007"
+						ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,.75),NumberSequenceKeypoint.new(1,1)})
+						ptc.ZOffset = i<=4 and -1 or -2
+						ptc.EmissionDirection = Enum.NormalId.Top
+						ptc.Lifetime = NumberRange.new(.5,1)
+						ptc.Rate = 100
+						ptc.Rotation = NumberRange.new(-360,360)
+						ptc.RotSpeed = NumberRange.new(-15,15)
+						ptc.Speed = NumberRange.new(15,15)
+						ptc.SpreadAngle = Vector2.new(5,5)
+						ptc.Acceleration = Vector3.new(0,10,0)
+						ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+						ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+						waits[#waits+1]={Time=.7,function()
+							ptc.Enabled=false
+						end}
+					end
+					game:GetService("Debris"):AddItem(slash,2)
+				end}
+
+				waits[#waits+1]={Time=.75,function()
+					sound("rbxassetid://577577319",3.5,char.Torso)--explosion
+				end}
+
+				waits[#waits+1]={Time=.85,function()
+					local part = Instance.new("Part",workspace.Effects)
+					part.Size = Vector3.new(1, 1, 1)
+					part.CFrame = char.HumanoidRootPart.CFrame*CFrame.new(0,-3,-6)*CFrame.Angles(math.rad(0),math.rad(0),math.rad(0))
+					part.Anchored=true
+					part.CanCollide=false
+					part.Transparency=1
+					for i = 1,2 do
+						local ptc = Instance.new("ParticleEmitter",part)
+						ptc.Brightness = i==1 and 2 or 15
+						ptc.Color = i==1 and ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,132,75)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+							or ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255, 191, 0)),ColorSequenceKeypoint.new(.8,Color3.fromRGB(255,12,0)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+						ptc.LightEmission = i==1 and 1 or -.5 ptc.LightInfluence = 0 ptc.Orientation = i==1 and Enum.ParticleOrientation.FacingCamera or Enum.ParticleOrientation.VelocityParallel
+						ptc.Size = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,.25,.025),NumberSequenceKeypoint.new(1,0)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,.492),NumberSequenceKeypoint.new(.25,1.37,.25),NumberSequenceKeypoint.new(.643,3.17,.165),NumberSequenceKeypoint.new(1,.874)})
+						ptc.Squash = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,0,1),NumberSequenceKeypoint.new(1,0,1)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,-.25,0),NumberSequenceKeypoint.new(1,.5,.25)})
+						ptc.Texture = i==1 and "rbxassetid://4509687978" or "http://www.roblox.com/asset/?id=11534281007"
+						ptc.Transparency = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.2),NumberSequenceKeypoint.new(1,1)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,0),NumberSequenceKeypoint.new(1,1)})
+						ptc.ZOffset = 1 ptc.EmissionDirection = i==1 and Enum.NormalId.Top or Enum.NormalId.Right
+						ptc.Lifetime = NumberRange.new(i==1 and .375 or .5,i==1 and .625 or .7) ptc.Rate=0
+						ptc.Rotation = NumberRange.new(i==1 and -360 or -90,i==1 and 360 or -90) 
+						ptc.RotSpeed = NumberRange.new(i==1 and -45 or 0,i==1 and 45 or 0)
+						ptc.Speed = NumberRange.new(i==1 and 80 or 80,i==1 and 80 or 80)
+						ptc.SpreadAngle = Vector2.new(i==1 and 45 or 0,i==1 and 45 or 180)
+						ptc.Acceleration = Vector3.new(0,i==1 and -25 or 45,0)
+						ptc.Drag = i==1 and 5 or 3
+						if i==2 then
+							ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+							ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+						end
+						ptc:Emit(i==1 and 50 or 200)
+					end
+					game:GetService("Debris"):AddItem(part,1)
+
+					local part = Instance.new("Part",workspace.Effects)
+					part.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(0,0,-8)
+					part.CanCollide=false part.Anchored=true part.Transparency=1
+					local part2 = Instance.new("Part",workspace.Effects)
+					part2.CFrame = char.HumanoidRootPart.CFrame * CFrame.new(0,0,-8)
+					part2.CanCollide=false part2.Anchored=true part2.Transparency=1
+					local att = Instance.new("Attachment",part)
+					game:GetService("Debris"):AddItem(part,5)
+					game:GetService("Debris"):AddItem(part2,5)
+					for i = 1,2 do
+						local ptc = Instance.new("ParticleEmitter",att)
+						ptc.Brightness = i==1 and 5 or 1
+						ptc.Color = i==1 and 
+							ColorSequence.new({
+								ColorSequenceKeypoint.new(0,Color3.fromRGB(255,72,0)),
+								ColorSequenceKeypoint.new(.353,Color3.fromRGB(224,79,31)),
+								ColorSequenceKeypoint.new(.424,Color3.fromRGB(179,90,76)),
+								ColorSequenceKeypoint.new(.491,Color3.fromRGB(0,132,255)),
+								ColorSequenceKeypoint.new(.585,Color3.fromRGB(191,33,64)),
+								ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))
+							})
+							or ColorSequence.new({
+								ColorSequenceKeypoint.new(0,Color3.fromRGB(125,125,125)),
+								ColorSequenceKeypoint.new(1,Color3.fromRGB(25,25,25))
+							})
+						ptc.LightEmission = i==1 and 1 or 0 ptc.LightInfluence=0
+						ptc.Size = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,25),NumberSequenceKeypoint.new(1,25)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,25),NumberSequenceKeypoint.new(1,25)})
+						ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0.1),NumberSequenceKeypoint.new(1,0.1)})
+						ptc.Texture = i==1 and "http://www.roblox.com/asset/?id=11534281007" or "rbxassetid://8073306083"
+						ptc.Transparency = i==1 and NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.5),NumberSequenceKeypoint.new(1,1)})
+							or NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.252,.932),NumberSequenceKeypoint.new(1,1)})
+						ptc.ZOffset = i==1 and 1 or -3
+						ptc.EmissionDirection = Enum.NormalId.Top
+						ptc.Lifetime = i==1 and NumberRange.new(.5,1) or NumberRange.new(2,4)
+						ptc.Rate = 0
+						ptc.Rotation = NumberRange.new(-360,360)
+						ptc.RotSpeed = i==1 and NumberRange.new(-45,45) or NumberRange.new(-15,15)
+						ptc.Speed = i==1 and NumberRange.new(100,250) or NumberRange.new(100,200)
+						ptc.SpreadAngle = Vector2.new(180,180)
+						ptc.FlipbookLayout = i==1 and Enum.ParticleFlipbookLayout.Grid4x4 or Enum.ParticleFlipbookLayout.Grid8x8
+						ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+						ptc.LockedToPart = true
+						ptc.Drag = i==1 and 20 or 12
+						ptc:Emit(50)
+					end
+
+					local ptc = Instance.new("ParticleEmitter",part2)
+					ptc.Brightness = 1
+					ptc.Color = ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(255,53,3)),ColorSequenceKeypoint.new(1,Color3.fromRGB(255,0,0))})
+					ptc.LightEmission = 1 ptc.LightInfluence = 0 ptc.Orientation = Enum.ParticleOrientation.VelocityPerpendicular
+					ptc.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,25),NumberSequenceKeypoint.new(1,25)})
+					ptc.Squash = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(1,0)})
+					ptc.Texture = "http://www.roblox.com/asset/?id=11534281007"
+					ptc.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.5,.8),NumberSequenceKeypoint.new(1,1)})
+					ptc.ZOffset = 0
+					ptc.EmissionDirection = Enum.NormalId.Top
+					ptc.Lifetime = NumberRange.new(.5,1)
+					ptc.Rate = 0
+					ptc.Rotation = NumberRange.new(-360,360)
+					ptc.RotSpeed = NumberRange.new(-15,15)
+					ptc.Speed = NumberRange.new(.001,.001)
+					ptc.SpreadAngle = Vector2.new(5,5)
+					ptc.FlipbookLayout = Enum.ParticleFlipbookLayout.Grid4x4
+					ptc.FlipbookMode = Enum.ParticleFlipbookMode.OneShot
+					ptc.LockedToPart = true
+					ptc:Emit(50)
+				end}
+				waits[#waits+1]={Time=1,function()
+					sound("rbxassetid://8388601745",1,char.Torso)--burning
+				end}
+
+				waits[#waits+1]={Time=1.4,function()
+					timePassed.pressed4mode=false
+					anim:Stop(.4)
+				end}
+			end
+		end
+	end
+end
+
+repeat task.wait() until not plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName)
+for i,v in pairs(GTabs) do _G[v][newName]={} end
+checkButton()
+updateMusic()
+
+input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
+	if chat then return end
+	if key.KeyCode.Name == "M" then
+		disable()
+	end
+end)
+
+if char:FindFirstChildOfClass("Shirt") and char:GetAttribute(legalName) then 
+	currentSkin=char:GetAttribute(legalName) or 1
+	repeat task.wait() 
+		local num = 0 
+		for i,v in pairs(char:GetChildren()) do 
+			if v.Name=="Morph" and not v:GetAttribute("Ignore") then 
+				num+=1 
+			end 
+		end 
+		if num==0 then 
+			break 
+		end 
+	until not char:FindFirstChild("Morph") or _G[newName]~=currentScript 
+	if _G[newName]~=currentScript then return end 
+	selected=true 
+end
+
+if selected then
+	isSelected=true checking=true
+	createAvatar()
+end
+createFuncs()
