@@ -395,52 +395,36 @@ local function animate(id,speed,float)
 end
 
 local function createText(TEXT,duration,pos)
-	local part = Instance.new("Part",workspace)
-	part.Massless = true
-	part.Anchored=true
-	part.CFrame = pos
-	part.Size = Vector3.new(15, 5, 0)
-	part.CanCollide = false
-	part.Transparency = 1
-	part.Name = "OHHHHHHHHHHHH"
-	game:GetService("Debris"):AddItem(part,duration+1)
-
-	local gui = Instance.new("BillboardGui",part)
-	gui.Size = UDim2.new(8,0,1,0)
-	gui.AlwaysOnTop = true
+	local gui = Instance.new("BillboardGui",char.Head)
+	gui.Size = UDim2.new(8,0,2,0)
+	gui.Brightness = 7 gui.LightInfluence = 0
+	gui.StudsOffset = Vector3.new(0,.5,0)
 	local text = Instance.new("TextLabel",gui)
 	text.BackgroundTransparency = 1
 	text.TextScaled = true
-	text.Text = ""
+	text.Text = TEXT
 	text.Size = UDim2.new(1,0,.5,0)
 	text.AnchorPoint = Vector2.new(.5,.5)
 	text.Position = UDim2.new(.5,0,.5,0)
-	text.Font = Enum.Font.GrenzeGotisch
+	text.Font = Enum.Font.SourceSansBold
 	text.FontFace.Style = Enum.FontStyle.Italic
-	text.TextColor3 = Color3.fromRGB(138, 0, 0)
-	text.TextXAlignment = Enum.TextXAlignment.Left
+	text.TextColor3 = Color3.fromRGB(0, 110, 255)
 	local stroke = Instance.new("UIStroke",text)
 	stroke.Thickness = 3
+	game:GetService("Debris"):AddItem(gui,duration+1)
 
 	text.TextTransparency=1
 	stroke.Transparency=1
 
 	task.spawn(function()
-		for i = 1,#TEXT do
-			text.Text = string.sub(TEXT,0,i)
-			wait(duration/(duration*15))
-		end
-	end)
-
-	task.spawn(function()
-		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=0}):Play()
-		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=0}):Play()
-		game:GetService("TweenService"):Create(text,TweenInfo.new(duration+1),{Position=UDim2.new(0.5,0,-.1,0)}):Play()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(duration/10),{TextTransparency=0}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(duration/10),{Transparency=0}):Play()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(duration/10),{Position=UDim2.new(0.5,0,-.1,0)}):Play()
 		wait(duration)
-		game:GetService("TweenService"):Create(text,TweenInfo.new(1),{TextTransparency=1}):Play()
-		game:GetService("TweenService"):Create(stroke,TweenInfo.new(1),{Transparency=1}):Play()
+		game:GetService("TweenService"):Create(text,TweenInfo.new(duration/10),{TextTransparency=1}):Play()
+		game:GetService("TweenService"):Create(stroke,TweenInfo.new(duration/10),{Transparency=1}):Play()
 	end)
-	return part
+	return gui
 end
 
 local timePassed = {
