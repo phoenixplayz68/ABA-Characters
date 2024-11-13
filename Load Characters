@@ -2,7 +2,7 @@
 if _G.input then _G.input:Disconnect() _G.input=nil end
 
 _G.input = game:GetService("UserInputService").InputBegan:Connect(function(key,chat)
-	if chat pr _G.Akaza==nil or _G.ABACons==nil then return end
+	if chat or _G.Akaza==nil or _G.ABACons==nil then return end
 	if key.KeyCode.Name == "M" then
 		_G.input:Disconnect() _G.input=nil
 		if _G.ABACons then
