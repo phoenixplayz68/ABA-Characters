@@ -648,7 +648,7 @@ local function resetCons(dis)
 		for i,v in pairs(cons2) do
 			v:Disconnect()
 		end
-		task.spawn(function() plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots[newName]:Destroy() end)
+		for i,v in pairs(_G[newName.."Buttons"]) do v:Destroy() end
 	end
 	if char and not char:FindFirstChild("Morph") then return end
 	for i,v in pairs(char:GetChildren()) do
@@ -793,6 +793,7 @@ function checkButton(thing)
 	if makingButton then return end
 	makingButton=true
 	plr.PlayerGui:WaitForChild("HUD")
+	wait()
 	for i,v in pairs(_G[newName.."Buttons"]) do v:Destroy() end
 	task.wait()
 	for i,v in pairs(cons2) do v:Disconnect() end
@@ -986,6 +987,11 @@ function createFuncs()
 		if rosterFrame and rosterFrame.Parent and plr.PlayerGui:FindFirstChild("HUD") then
 			rosterFrame.Visible = plr.PlayerGui.HUD.CharacterSelect.Characters.SAO.Visible
 		end
+		if plr.PlayerGui:FindFirstChild("HUD") then 
+			if not plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) or plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and not plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then
+				checkButton()
+			end
+		end
 		if not selected then return end
 		if isSetting then 
 			char = plr.Character
@@ -1042,9 +1048,6 @@ function createFuncs()
 		if prevBase~=isBase then changed=true end
 		local skinTab = not isBase and skins[currentSkin].modeFit or skins[currentSkin]
 		if not plr.PlayerGui:FindFirstChild("HUD") then return end
-		if not plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) or plr.PlayerGui.HUD.CharacterSelect.Characters:FindFirstChild(rosters[roster]) and not plr.PlayerGui.HUD.CharacterSelect.Characters[rosters[roster]].Slots:FindFirstChild(newName) then
-			checkButton()
-		end
 		if selected then
 			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Title1.Text=newName
 			plr.PlayerGui.HUD.CharacterSelect.InfoBox.Desc.Text=info
