@@ -3,7 +3,7 @@ if _G.input then _G.input:Disconnect() _G.input=nil end
 if _G.teleporter then _G.teleporter:Disconnect() _G.teleporter=nil end
 
 local TeleportCheck = false
-game.Players.LocalPlayer.OnTeleport:Connect(function(State)
+_G.teleporter = game.Players.LocalPlayer.OnTeleport:Connect(function(State)
 	if not TeleportCheck then
 		TeleportCheck = true
 		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Load%20Characters'))()")
