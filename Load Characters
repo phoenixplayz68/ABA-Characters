@@ -24,8 +24,6 @@ end)
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Basic%20Functions'))()
 repeat task.wait() until _G.ABACons~=nil
 
-local oldAkaza = _G.Akaza
-
 --Characters
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Yoriichi'))()
 loadstring(game:HttpGet('https://raw.githubusercontent.com/phoenixplayz68/ABA-Characters/refs/heads/main/Muzan'))()
